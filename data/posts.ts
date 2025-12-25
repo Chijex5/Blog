@@ -4,7 +4,7 @@ export const blogPosts: BlogPost[] = [
   {
     id: '1',
     title: 'Getting Started with Next.js and TypeScript',
-    excerpt: 'Learn how to build modern web applications with Next.js 14 and TypeScript. This guide covers the basics and best practices.',
+    excerpt: 'Learn how to build modern web applications with Next.js 16 and TypeScript. This guide covers the basics and best practices.',
     content: `
 # Getting Started with Next.js and TypeScript
 

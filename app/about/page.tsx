@@ -18,7 +18,7 @@ export default function About() {
           This blog is built with modern web technologies:
         </p>
         <ul className="list-disc list-inside text-gray-700 dark:text-gray-300 mb-6 space-y-2">
-          <li><strong>Next.js 14</strong> - The React framework for production</li>
+          <li><strong>Next.js 16</strong> - The React framework for production</li>
           <li><strong>TypeScript</strong> - For type-safe code</li>
           <li><strong>Tailwind CSS</strong> - For beautiful, responsive designs</li>
         </ul>
