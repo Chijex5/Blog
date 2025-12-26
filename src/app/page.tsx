@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import BadgeComponent from "./BadgeComponent"
 import Footer from "@/components/Footer"
+import { RiSearchLine } from "react-icons/ri";
 
 const categories = ["All", "Audience", "Writing", "Business", "Mindset"]
 
@@ -14,9 +15,9 @@ export default function Home() {
   return (
     <main className="max-w-7xl mx-auto bg-[var(--color-warm-bg)] md:max-w-[80vw] px-4 py-20">
       {/* HERO */}
-      <section className="text-center mb-20">
+      <section className="text-center mb-20 ">
         <span className="inline-block mb-6 rounded-full bg-[var(--color-warm-accent)] text-black font-bold px-4 py-1 text-xs">
-          From the desk of Skylar
+          From the desk of Chijoke
         </span>
 
         <h1 className="text-4xl md:text-6xl font-sans font-weight-500 tracking-tight mb-10">
@@ -39,15 +40,34 @@ export default function Home() {
       </section>
 
       {/* FILTER BAR */}
-      <section className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-12">
+      <section className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-6">
         <div className="md:flex md:flex-row md:flex-wrap grid grid-cols-4 gap-2">
           <BadgeComponent categories={categories} /> 
         </div>
 
-        <Input
-          placeholder="Search"
-          className="md:max-w-xs h-11 bg-white shadow-none border-none rounded-lg focus:ring-2 focus:ring-[var(--color-warm-accent)]"
-        />
+        <div className="relative w-full md:max-w-xs">
+      {/* Search Icon */}
+          <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+            <RiSearchLine className="w-5 h-5 text-gray-400" />
+          </div>
+
+          {/* Input */}
+          <input
+            type="text"
+            placeholder="Search"
+            className="
+              w-full
+              h-11
+              pl-10
+              pr-4
+              rounded-xl
+              bg-white
+              focus:outline-none
+              focus:ring-2 focus:ring-[var(--color-warm-accent)]
+              focus:border-transparent
+            "
+          />
+        </div>
       </section>
 
       {/* BLOG GRID */}
