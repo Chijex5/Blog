@@ -18,10 +18,19 @@ interface PostEditorProps {
 const DEFAULT_TAG = 'Uncategorized';
 
 // Calculate read time based on word count (average reading speed: 200 words per minute)
-function calculateReadTime(content: string): string {
-  const text = content.replace(/<[^>]*>/g, ''); // Strip HTML tags
-  const wordCount = text.trim().split(/\s+/).length;
-  const minutes = Math.ceil(wordCount / 200);
+function calculateReadTime(content: any): string {
+  const extractText = (node: any): string => {
+    if (!node) return '';
+    if (node.type === 'text') return node.text || '';
+    if (node.content) {
+      return node.content.map(extractText).join(' ');
+    }
+    return '';
+  };
+  
+  const text = extractText(content);
+  const wordCount = text.trim().split(/\s+/).filter(w => w).length;
+  const minutes = Math.max(1, Math.ceil(wordCount / 200));
   return `${minutes} min read`;
 }
 
@@ -29,7 +38,7 @@ export default function PostEditor({ postId }: PostEditorProps) {
   const router = useRouter();
   const [title, setTitle] = useState('');
   const [excerpt, setExcerpt] = useState('');
-  const [content, setContent] = useState('');
+  const [content, setContent] = useState<any>({ type: 'doc', content: [] });
   const [author, setAuthor] = useState('');
   const [tags, setTags] = useState('');
   const [image, setImage] = useState('');
@@ -63,7 +72,7 @@ export default function PostEditor({ postId }: PostEditorProps) {
       id: newId,
       title: title || 'Untitled Post',
       excerpt: excerpt || 'No excerpt provided',
-      content: content || '',
+      content: content,
       date: new Date().toISOString().split('T')[0],
       author: author || 'Anonymous',
       tags: tags ? tags.split(',').map(tag => tag.trim()).filter(tag => tag) : [DEFAULT_TAG],
@@ -82,7 +91,7 @@ export default function PostEditor({ postId }: PostEditorProps) {
     id: 'preview',
     title: title || 'Untitled Post',
     excerpt: excerpt || 'No excerpt provided',
-    content: content || '<p>Start writing your post...</p>',
+    content: content,
     date: new Date().toISOString().split('T')[0],
     author: author || 'Anonymous',
     tags: tags ? tags.split(',').map(tag => tag.trim()).filter(tag => tag) : [DEFAULT_TAG],

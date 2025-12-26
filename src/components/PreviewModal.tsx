@@ -25,22 +25,6 @@ export default function PreviewModal({ isOpen, onClose, post }: PreviewModalProp
 
   if (!isOpen) return null;
 
-  // Parse HTML content to JSON for TiptapRenderer
-  const parseHTMLToJSON = (html: string) => {
-    // Simple parser - in production you might want something more robust
-    return {
-      type: 'doc',
-      content: [
-        {
-          type: 'paragraph',
-          content: html ? undefined : [{ type: 'text', text: 'Start writing your post...' }],
-        },
-      ],
-    };
-  };
-
-  const contentJSON = post.content ? parseHTMLToJSON(post.content) : parseHTMLToJSON('');
-
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">
       {/* Backdrop */}
@@ -55,6 +39,7 @@ export default function PreviewModal({ isOpen, onClose, post }: PreviewModalProp
           {/* Close Button */}
           <button
             onClick={onClose}
+            title="Close preview"
             className="sticky top-4 float-right mr-4 mt-4 p-2 rounded-full bg-[var(--color-warm-accent)] hover:bg-gray-300 transition-colors z-10"
           >
             <X className="w-5 h-5" />
@@ -122,10 +107,7 @@ export default function PreviewModal({ isOpen, onClose, post }: PreviewModalProp
               )}
 
               {/* Content */}
-              <div 
-                className="prose prose-lg md:prose-xl dark:prose-invert max-w-none prose-headings:font-sans prose-headings:font-bold prose-headings:tracking-tight prose-p:leading-relaxed prose-a:text-blue-600 prose-a:no-underline hover:prose-a:underline prose-img:rounded-lg prose-code:bg-gray-100 prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-code:before:content-none prose-code:after:content-none"
-                dangerouslySetInnerHTML={{ __html: post.content }}
-              />
+              <TiptapRenderer content={post.content} />
             </article>
           </div>
         </div>
