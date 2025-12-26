@@ -15,6 +15,8 @@ interface PostEditorProps {
   isNew?: boolean;
 }
 
+const DEFAULT_TAG = 'Uncategorized';
+
 export default function PostEditor({ postId, isNew = false }: PostEditorProps) {
   const router = useRouter();
   const [currentId, setCurrentId] = useState<string>(postId || '');
@@ -28,6 +30,7 @@ export default function PostEditor({ postId, isNew = false }: PostEditorProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [hasStartedTyping, setHasStartedTyping] = useState(false);
+  const [saveSuccess, setSaveSuccess] = useState(false);
 
   useEffect(() => {
     // If editing an existing post, load it
@@ -60,6 +63,7 @@ export default function PostEditor({ postId, isNew = false }: PostEditorProps) {
 
   const handleSave = () => {
     setIsSaving(true);
+    setSaveSuccess(false);
     
     const post: BlogPost = {
       id: currentId,
@@ -68,16 +72,17 @@ export default function PostEditor({ postId, isNew = false }: PostEditorProps) {
       content: content || '',
       date: new Date().toISOString().split('T')[0],
       author: author || 'Anonymous',
-      tags: tags ? tags.split(',').map(tag => tag.trim()).filter(tag => tag) : ['Uncategorized'],
+      tags: tags ? tags.split(',').map(tag => tag.trim()).filter(tag => tag) : [DEFAULT_TAG],
       readTime: readTime || '5 min read',
       image: image || undefined,
     };
 
     savePost(post);
     setIsSaving(false);
+    setSaveSuccess(true);
     
-    // Show success message or redirect
-    alert('Post saved successfully!');
+    // Hide success message after 3 seconds
+    setTimeout(() => setSaveSuccess(false), 3000);
   };
 
   if (isLoading) {
@@ -95,10 +100,17 @@ export default function PostEditor({ postId, isNew = false }: PostEditorProps) {
           <ArrowLeft className="h-4 w-4" />
           Back to Blog
         </Link>
-        <Button onClick={handleSave} disabled={isSaving} className="flex items-center gap-2">
-          <Save className="h-4 w-4" />
-          {isSaving ? 'Saving...' : 'Save Post'}
-        </Button>
+        <div className="flex items-center gap-3">
+          {saveSuccess && (
+            <div className="text-sm text-green-600 font-medium">
+              ✓ Post saved successfully!
+            </div>
+          )}
+          <Button onClick={handleSave} disabled={isSaving} className="flex items-center gap-2">
+            <Save className="h-4 w-4" />
+            {isSaving ? 'Saving...' : 'Save Post'}
+          </Button>
+        </div>
       </div>
 
       <h1 className="text-3xl font-bold mb-8">

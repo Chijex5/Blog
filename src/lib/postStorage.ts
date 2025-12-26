@@ -4,7 +4,7 @@ import { BlogPost } from "@/types/blog";
 // In a real app, this would be an API call to a backend
 
 export function generatePostId(): string {
-  return Date.now().toString() + Math.random().toString(36).substr(2, 9);
+  return Date.now().toString() + Math.random().toString(36).substring(2, 11);
 }
 
 export function savePost(post: BlogPost): void {
