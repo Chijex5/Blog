@@ -1,10 +1,10 @@
 import { getBlogPost, getBlogPosts } from '@/data/posts';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import ReactMarkdown from 'react-markdown';
 import { ArrowLeft, Clock, Tag } from 'lucide-react';
 import ScrollProgressBar from '@/components/ScrollProgressBar';
 import Footer from '@/components/Footer';
+import TiptapRenderer from '@/components/TiptapRenderer';
 
 interface PageProps {
   params: Promise<{
@@ -99,9 +99,7 @@ export default async function BlogPost({ params }: PageProps) {
           )}
 
           {/* Content */}
-          <div className="prose prose-lg md:prose-xl dark:prose-invert max-w-none prose-headings:font-sans prose-headings:font-bold prose-headings:tracking-tight prose-p:leading-relaxed prose-a:text-blue-600 prose-a:no-underline hover:prose-a:underline prose-img:rounded-lg prose-code:bg-gray-100 prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-code:before:content-none prose-code:after:content-none">
-            <ReactMarkdown>{post.content}</ReactMarkdown>
-          </div>
+          <TiptapRenderer content={post.content} />
         </article>
 
         {/* Related Posts or CTA could go here */}
