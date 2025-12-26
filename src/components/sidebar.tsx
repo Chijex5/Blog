@@ -15,6 +15,8 @@ import {
   LucideArrowUpRightSquare,
   ArrowUpRightIcon,
 } from "lucide-react"
+import { Input } from "./ui/input"
+import { useRouter, usePathname } from "next/navigation"
 
 // Sidebar Context
 const SidebarContext = createContext<{
@@ -57,8 +59,8 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
 
   return (
     <aside
-      className={`hidden md:block fixed left-0 top-0 h-screen bg-[#f4f1ed] border-r transition-all duration-300 ease-in-out z-40 ${
-        isCollapsed ? "w-[4.5rem] px-2" : "w-[15rem]"
+      className={`hidden md:block fixed left-0 top-0 h-screen bg-[var(--color-warm-accent)] transition-all duration-300 ease-in-out z-40 ${
+        isCollapsed ? "w-[4.5rem] px-2" : "w-[15rem] px-3"
       }`}
     >
       <div className="flex flex-col h-full overflow-hidden">
@@ -74,14 +76,25 @@ export function SidebarToggle() {
 
   return (
     <button
-      onClick={toggleSidebar}
-      className="absolute -right-4 top-12 z-50 h-8 w-8 rounded-full border border-gray-300 bg-white shadow-md hover:bg-gray-50 flex items-center justify-center transition-colors"
-    >
-      {isCollapsed ? (
-        <ChevronRight className="h-4 w-4" />
-      ) : (
-        <ChevronLeft className="h-4 w-4" />
-      )}
+        onClick={toggleSidebar}
+        className="absolute -right-4 top-12 z-50 rounded-full bg-black shadow-md text-white flex items-center justify-center transition-all duration-300 ease-in-out"
+        style={{
+            width: isCollapsed ? '28px' : '32px',
+            height: isCollapsed ? '28px' : '32px',
+        }}
+        >
+        <div
+            className="transition-transform duration-300 ease-in-out flex items-center justify-center"
+            style={{
+            transform: isCollapsed ? 'rotate(180deg)' : 'rotate(0deg)',
+            }}
+        >
+            {isCollapsed ? (
+            <ChevronLeft className="h-3 w-3" />
+            ) : (
+            <ChevronLeft className="h-4 w-4" />
+            )}
+        </div>
     </button>
   )
 }
@@ -122,7 +135,7 @@ export function SidebarFooter({ children }: { children: React.ReactNode }) {
 // Sidebar Group
 export function SidebarGroup({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
-    <div className={`px-2 py-2 mb-2 ${className}`}>
+    <div className={`px-2 py-2 mb-1 ${className}`}>
       {children}
     </div>
   )
@@ -146,31 +159,52 @@ export function SidebarMenuButton({
   children,
   isActive = false,
   icon: Icon,
+  to,
+  isExternal = false,
   badge,
+  showArrow = false,
 }: {
   children: React.ReactNode
   isActive?: boolean
+  to: string
+  isExternal?: boolean
   icon: any
   badge?: string | number
+  showArrow?: boolean
 }) {
   const { isCollapsed } = useSidebar()
+  const router = useRouter()
 
   return (
     <button
-      className={`w-full flex items-center mb-2 gap-4 px-3 py-2 rounded-lg transition-colors ${
+      className={`w-full group flex items-center mb-2 gap-4 px-3 py-2 rounded-lg transition-colors ${
         isActive
           ? "bg-white text-gray-900"
           : "text-gray-700 hover:bg-white/50"
       } ${isCollapsed ? "justify-center w-8 h-8" : ""}`}
+      onClick={()=> {
+        if(isExternal){
+            window.open(to, "_blank");
+            return
+        }
+        router.push(to)
+      }}
     >
-      <Icon className="w-5 h-5 shrink-0" />
+      <Icon className="w-4 h-4 shrink-0" />
       {!isCollapsed && (
         <>
           <span className="flex-1 text-left text-sm">{children}</span>
           {badge && (
-            <span className="text-xs bg-gray-200 rounded-md px-2 py-0.5">
+            <span className="text-xs bg-white rounded-md px-2 py-0.5">
               {badge}
             </span>
+          )}
+          {showArrow && (
+            <div className="bg-white rounded-sm p-1 w-6 h-6 flex items-center justify-center shrink-0">
+                <ArrowUpRightIcon
+                    className="w-3.5 h-3.5 text-black transition-transform duration-200 ease-out group-hover:rotate-45"
+                />
+            </div>
           )}
         </>
       )}
@@ -180,6 +214,7 @@ export function SidebarMenuButton({
 
 // Demo App Component
 export default function SidebarApp() {
+    const pathname = usePathname();
   return (
       <Sidebar>
         <SidebarToggle />
@@ -191,13 +226,13 @@ export default function SidebarApp() {
         <SidebarContent>
           {/* Main Navigation */}
           <SidebarGroup>
-            <SidebarMenuButton  icon={Home} isActive>
+            <SidebarMenuButton to="/" icon={Home} isActive={pathname === "/"}>
               Home
             </SidebarMenuButton>
-            <SidebarMenuButton icon={User}>
+            <SidebarMenuButton to="/about" icon={User} isActive={pathname === "/about"}>
               About
             </SidebarMenuButton>
-            <SidebarMenuButton icon={FileText} badge={6}>
+            <SidebarMenuButton to="/letters" icon={FileText} badge={6} isActive={pathname === "/letters"}>
               Letters
             </SidebarMenuButton>
           </SidebarGroup>
@@ -205,13 +240,13 @@ export default function SidebarApp() {
           {/* Find Me Section */}
           <SidebarGroup>
             <SidebarGroupLabel>Find me</SidebarGroupLabel>
-            <SidebarMenuButton icon={Instagram}>
+            <SidebarMenuButton to="https://instagram.com" isExternal icon={Instagram} showArrow>
               Instagram
             </SidebarMenuButton>
-            <SidebarMenuButton icon={Youtube}>
+            <SidebarMenuButton to="https://youtube.com" isExternal icon={Youtube} showArrow>
               YouTube
             </SidebarMenuButton>
-            <SidebarMenuButton icon={Mail}>
+            <SidebarMenuButton to="mailto:contact@example.com" isExternal icon={Mail} showArrow>
               Email
             </SidebarMenuButton>
           </SidebarGroup>
@@ -250,7 +285,7 @@ function PinnedSection() {
 
   if (isCollapsed) return (
     <SidebarGroup>
-      <SidebarMenuButton icon={PinIcon}>Pinned</SidebarMenuButton>
+      <SidebarMenuButton to="/post/1" icon={PinIcon}>Pinned</SidebarMenuButton>
     </SidebarGroup>
   )
 
@@ -264,7 +299,7 @@ function PinnedSection() {
             <img src="https://framerusercontent.com/images/9yiL4fu5UwNTh7C8QpYzPwL8Wo.png" className="w-full h-32 rounded-sm" alt="" />
 
             <div className="flex items-center justify-between gap-2 mt-2">
-                <p className="text-[12px] font-medium  text-gray-800 max-w-[60%] leading-snug">
+                <p className="text-[10px] font-medium  text-gray-800 max-w-[60%] leading-snug">
                 The Only Writing Tools I Actually Use
                 </p>
 
@@ -284,10 +319,10 @@ function NewsletterForm() {
   return (
     <div>
       <p className="font-medium mb-2 text-sm">Stay in the loop</p>
-      <input
+      <Input
         type="email"
         placeholder="Your email"
-        className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm mb-3"
+        className="w-full bg-white shadow-none border-none rounded-lg px-3 py-2 text-sm mb-3"
       />
       <button className="w-full rounded-md bg-black py-2 text-white text-sm hover:bg-gray-800 transition-colors">
         Subscribe

@@ -2,6 +2,7 @@ import { getBlogPost, getBlogPosts } from '@/data/posts';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import ReactMarkdown from 'react-markdown';
+import { ChevronRight } from 'lucide-react';
 
 interface PageProps {
   params: Promise<{
@@ -26,40 +27,29 @@ export default async function BlogPost({ params }: PageProps) {
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-12">
-      <Link
-        href="/"
-        className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:underline mb-8"
-      >
-        ← Back to Home
-      </Link>
+      <div className='w-full flex items-center justify-between'>
+        <Link
+          href="/"
+          className="inline-block mb-6 rounded-full text-black/48 bg-[var(--color-warm-accent)] text-black font-bold px-4 py-1 text-xs">
+          Back
+        </Link>
+
+        <span className="inline-block mb-6 rounded-full bg-[var(--color-warm-accent)] text-black/48 font-bold px-4 py-1 text-xs">
+          {post.tags[0]} . {post.readTime}
+        </span>
+
+        <span className="flex items-center cursor:pointer justify-between mb-6 rounded-full bg-[var(--color-warm-accent)] text-black/48 font-bold px-1 py-1 text-xs">
+          <ChevronRight className="inline-block w-4 h-4" />
+        </span>
+      </div>      
       
       <article>
         <header className="mb-8">
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
+          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 text-center dark:text-white mb-4">
             {post.title}
           </h1>
-          <div className="flex flex-wrap items-center gap-4 text-gray-600 dark:text-gray-400 mb-4">
-            <time dateTime={post.date}>
-              {new Date(post.date).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-              })}
-            </time>
-            <span>•</span>
-            <span>{post.readTime}</span>
-            <span>•</span>
-            <span>By {post.author}</span>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {post.tags.map((tag) => (
-              <span
-                key={tag}
-                className="px-3 py-1 text-xs font-medium bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full"
-              >
-                {tag}
-              </span>
-            ))}
+          <div className="text-center text-base text-black/48 dark:text-gray-400">
+            {post.excerpt}
           </div>
         </header>
         
