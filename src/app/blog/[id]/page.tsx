@@ -31,7 +31,7 @@ export default async function BlogPost({ params }: PageProps) {
     <>
       <ScrollProgressBar />
       
-      <main className="max-w-4xl mx-auto bg-[var(--color-warm-bg)] px-4 py-12 md:py-20">
+      <main className="max-w-3xl mx-auto bg-[var(--color-warm-bg)] px-4 py-12 md:py-20">
         {/* Back Navigation */}
         <div className="mb-8">
           <Link
@@ -43,7 +43,7 @@ export default async function BlogPost({ params }: PageProps) {
           </Link>
         </div>
 
-        <article className="bg-white/50 backdrop-blur-sm rounded-2xl p-6 md:p-12 shadow-sm">
+        <article className="bg-[var(--color-warm-bg)] rounded-2xl p-6 md:p-12">
           {/* Header Section */}
           <header className="mb-12 text-center">
             {/* Tags and Read Time */}
@@ -89,11 +89,11 @@ export default async function BlogPost({ params }: PageProps) {
 
           {/* Featured Image */}
           {post.image && (
-            <div className="mb-12 rounded-xl overflow-hidden">
+            <div className="mb-12 rounded-xl bg-white overflow-hidden p-3">
               <img
                 src={post.image}
                 alt={post.title}
-                className="w-full h-auto object-cover"
+                className="w-full rounded-xl h-[436px] object-cover"
               />
             </div>
           )}
