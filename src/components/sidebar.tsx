@@ -7,7 +7,7 @@ import {
   User,
   Mail,
   Instagram,
-  Youtube,
+  GithubIcon,
   FileText,
   PinIcon,
   ChevronLeft,
@@ -17,6 +17,7 @@ import {
 } from "lucide-react"
 import { Input } from "./ui/input"
 import { useRouter, usePathname } from "next/navigation"
+import { BsTwitterX } from "react-icons/bs";
 
 // Sidebar Context
 const SidebarContext = createContext<{
@@ -240,11 +241,11 @@ export default function SidebarApp() {
           {/* Find Me Section */}
           <SidebarGroup>
             <SidebarGroupLabel>Find me</SidebarGroupLabel>
-            <SidebarMenuButton to="https://instagram.com" isExternal icon={Instagram} showArrow>
-              Instagram
+            <SidebarMenuButton to="https://x.com/chijex5" isExternal icon={BsTwitterX} showArrow>
+              Twitter
             </SidebarMenuButton>
-            <SidebarMenuButton to="https://youtube.com" isExternal icon={Youtube} showArrow>
-              YouTube
+            <SidebarMenuButton to="https://github.com/chijex5" isExternal icon={GithubIcon} showArrow>
+              GitHub
             </SidebarMenuButton>
             <SidebarMenuButton to="mailto:contact@example.com" isExternal icon={Mail} showArrow>
               Email
@@ -268,11 +269,11 @@ function ProfileSection() {
 
   return (
     <div className="flex items-center gap-3">
-      <div className="w-10 h-10 rounded-full bg-gray-300 shrink-0" />
+      <img src={'https://res.cloudinary.com/dc3yttemx/image/upload/v1766771782/calvinnova-products/l8kh5pv4rinceewuiwhr.png'} alt="profile picture" className="w-10 h-10 rounded-full bg-gray-300 shrink-0" />
       {!isCollapsed && (
         <div className="leading-tight">
-          <p className="font-medium text-sm">Skylar Rowe</p>
-          <p className="text-xs text-gray-500">Writer & Digital Creator</p>
+          <p className="font-medium text-sm">Chijoke Uzodinma</p>
+          <p className="text-xs text-gray-500">Full Stack Developer</p>
         </div>
       )}
     </div>
