@@ -122,15 +122,17 @@
   * {
     @apply border-border outline-ring/50;
   }
-  body {
-    @apply bg-background text-foreground;
-    font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";
-    font-feature-settings: "liga" 1, "calt" 1;
-  }
-  h1, h2, h3, h4, h5, h6 {
-    font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";
-    font-weight: 600;
-    letter-spacing: -0.02em;
-  }
+
+}
+
+.source-serif-text {
+  font-family: var(--font-stylish) !important;
+  font-style: normal;
+}
+
+/* Use the italic style */
+.source-serif-italic {
+  font-family: var(--font-stylish) !important;
+  font-style: italic;
 }
 

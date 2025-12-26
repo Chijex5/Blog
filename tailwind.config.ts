@@ -9,7 +9,12 @@ export default {
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        stylish: ['var(--font-stylish)', 'serif'],
+        sans: ['var(--font-sans)', 'sans-serif'],
+      },
+    },
   },
   plugins: [
     typography,

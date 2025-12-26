@@ -50,6 +50,7 @@ Next.js with TypeScript is a powerful combination for building modern web applic
   {
     id: '2',
     title: 'Mastering Tailwind CSS',
+    image: 'https://framerusercontent.com/images/PutCbUrDHloKzYlnrmDgTEqX2pU.png',
     excerpt: 'Discover the power of utility-first CSS with Tailwind. Learn how to build beautiful, responsive designs quickly and efficiently.',
     content: `
 # Mastering Tailwind CSS
@@ -98,6 +99,7 @@ Tailwind CSS streamlines the styling process and helps you build beautiful, main
   {
     id: '3',
     title: 'Building a Personal Blog: My Journey',
+    image: 'https://framerusercontent.com/images/Ct1xSTSiaJsPf3n2aDyia8cZ390.png?scale-down-to=1024',
     excerpt: 'A reflection on creating this blog using modern web technologies. Learn about the decisions and challenges faced along the way.',
     content: `
 # Building a Personal Blog: My Journey

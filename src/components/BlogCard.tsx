@@ -31,24 +31,7 @@ export default function BlogCard({ post }: BlogCardProps) {
 
             {/* DATE AND ONE TAG */}
             <div className="flex items-center gap-2 text-xs text-muted-foreground">
-              <time dateTime={post.date}>
-                {new Date(post.date).toLocaleDateString("en-US", {
-                  month: "short",
-                  day: "numeric",
-                  year: "numeric",
-                })}
-              </time>
-              {post.tags.length > 0 && (
-                <>
-                  <span>•</span>
-                  <Badge
-                    variant="outline"
-                    className="text-[10px] rounded-full px-2 py-0"
-                  >
-                    {post.tags[0]}
-                  </Badge>
-                </>
-              )}
+              <span> {post.tags[0]}</span>
             </div>
           </div>
 

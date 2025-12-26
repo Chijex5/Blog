@@ -3,6 +3,21 @@ import "./globals.css";
 import { SidebarProvider, SidebarWrapper } from "@/components/sidebar";
 import SidebarApp from "@/components/sidebar";
 import Footer from "@/components/Footer";
+import { Lora, Source_Serif_4, Manrope } from 'next/font/google'
+import MobileNav from "@/components/mobile-nav";
+
+export const sourceSerif = Source_Serif_4({
+  subsets: ['latin'],
+  weight: ['200', '300' ,'400', '500', '600', '700', '800', '900'],
+  style: ['normal', 'italic'],
+  variable: '--font-stylish',
+})
+
+export const manrope = Manrope({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700', '800'],
+  variable: '--font-sans',
+})
 
 export const metadata: Metadata = {
   title: "My Personal Blog",
@@ -15,13 +30,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${sourceSerif.variable} ${manrope.variable}`}>
       <body className="antialiased font-sans">
         <SidebarProvider>
           <SidebarApp />
           <SidebarWrapper>
-            <div className="flex-1 w-full bg-background transition-all duration-300">{children}</div>
+            <div className="flex-1 w-full bg-[var(--color-warm-bg)] transition-all duration-300">{children}</div>
           </SidebarWrapper>
+          <MobileNav />
         </SidebarProvider>
       </body>
     </html>
