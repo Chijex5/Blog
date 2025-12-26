@@ -8,14 +8,31 @@ export default function ScrollProgressBar() {
   useEffect(() => {
     const updateScrollProgress = () => {
       const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-      const scrolled = (window.scrollY / scrollHeight) * 100;
-      setScrollProgress(scrolled);
+      if (scrollHeight > 0) {
+        const scrolled = (window.scrollY / scrollHeight) * 100;
+        setScrollProgress(scrolled);
+      } else {
+        setScrollProgress(0);
+      }
     };
 
-    window.addEventListener("scroll", updateScrollProgress);
+    let timeoutId: NodeJS.Timeout | null = null;
+    const throttledUpdate = () => {
+      if (timeoutId === null) {
+        timeoutId = setTimeout(() => {
+          updateScrollProgress();
+          timeoutId = null;
+        }, 16); // ~60fps
+      }
+    };
+
+    window.addEventListener("scroll", throttledUpdate, { passive: true });
     updateScrollProgress();
 
-    return () => window.removeEventListener("scroll", updateScrollProgress);
+    return () => {
+      window.removeEventListener("scroll", throttledUpdate);
+      if (timeoutId) clearTimeout(timeoutId);
+    };
   }, []);
 
   return (
