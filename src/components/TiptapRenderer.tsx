@@ -2,7 +2,6 @@
 
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
-import { useEffect } from 'react';
 import { JSONContent } from '@tiptap/core';
 
 interface TiptapRendererProps {
@@ -12,7 +11,7 @@ interface TiptapRendererProps {
 export default function TiptapRenderer({ content }: TiptapRendererProps) {
   const editor = useEditor({
     extensions: [StarterKit],
-    content: content,
+    content,
     editable: false,
     immediatelyRender: false,
     editorProps: {
@@ -21,12 +20,6 @@ export default function TiptapRenderer({ content }: TiptapRendererProps) {
       },
     },
   });
-
-  useEffect(() => {
-    if (editor && content) {
-      editor.commands.setContent(content);
-    }
-  }, [editor, content]);
 
   return <EditorContent editor={editor} />;
 }
