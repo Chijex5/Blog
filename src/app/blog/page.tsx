@@ -40,7 +40,7 @@ export default function BlogPage() {
       {/* FILTER BAR */}
       <section className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-12">
         <div className="md:flex md:flex-row md:flex-wrap grid grid-cols-4 gap-2">
-          <BadgeComponent categories={categories} /> 
+          <BadgeComponent categories={categories} />
         </div>
 
         <Input
@@ -50,12 +50,12 @@ export default function BlogPage() {
       </section>
 
       {/* BLOG GRID */}
-      <section className="grid grid-cols-1 md:grid-cols-2  lg:grid-cols-3 gap-8">
+      <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {posts.map((post) => (
           <BlogCard key={post.id} post={post} />
         ))}
       </section>
-      <Footer />  
+      <Footer />
     </main>
   )
 }
