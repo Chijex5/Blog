@@ -2,7 +2,9 @@ import { getBlogPost, getBlogPosts } from '@/data/posts';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import ReactMarkdown from 'react-markdown';
-import { ChevronRight } from 'lucide-react';
+import { ArrowLeft, Clock, Tag } from 'lucide-react';
+import ScrollProgressBar from '@/components/ScrollProgressBar';
+import Footer from '@/components/Footer';
 
 interface PageProps {
   params: Promise<{
@@ -26,37 +28,95 @@ export default async function BlogPost({ params }: PageProps) {
   }
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-12">
-      <div className='w-full flex items-center justify-between'>
-        <Link
-          href="/"
-          className="inline-block mb-6 rounded-full text-black/48 bg-[var(--color-warm-accent)] text-black font-bold px-4 py-1 text-xs">
-          Back
-        </Link>
-
-        <span className="inline-block mb-6 rounded-full bg-[var(--color-warm-accent)] text-black/48 font-bold px-4 py-1 text-xs">
-          {post.tags[0]} . {post.readTime}
-        </span>
-
-        <span className="flex items-center cursor:pointer justify-between mb-6 rounded-full bg-[var(--color-warm-accent)] text-black/48 font-bold px-1 py-1 text-xs">
-          <ChevronRight className="inline-block w-4 h-4" />
-        </span>
-      </div>      
+    <>
+      <ScrollProgressBar />
       
-      <article>
-        <header className="mb-8">
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 text-center dark:text-white mb-4">
-            {post.title}
-          </h1>
-          <div className="text-center text-base text-black/48 dark:text-gray-400">
-            {post.excerpt}
-          </div>
-        </header>
-        
-        <div className="prose prose-lg dark:prose-invert max-w-none">
-          <ReactMarkdown>{post.content}</ReactMarkdown>
+      <main className="max-w-4xl mx-auto bg-[var(--color-warm-bg)] px-4 py-12 md:py-20">
+        {/* Back Navigation */}
+        <div className="mb-8">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors rounded-full bg-[var(--color-warm-accent)] px-4 py-2"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back to Home
+          </Link>
         </div>
-      </article>
-    </div>
+
+        <article className="bg-white/50 backdrop-blur-sm rounded-2xl p-6 md:p-12 shadow-sm">
+          {/* Header Section */}
+          <header className="mb-12 text-center">
+            {/* Tags and Read Time */}
+            <div className="flex flex-wrap items-center justify-center gap-3 mb-6">
+              {post.tags.map((tag, index) => (
+                <span
+                  key={index}
+                  className="inline-flex items-center gap-1 rounded-full bg-[var(--color-warm-accent)] text-black font-medium px-3 py-1 text-xs"
+                >
+                  <Tag className="w-3 h-3" />
+                  {tag}
+                </span>
+              ))}
+              <span className="inline-flex items-center gap-1 rounded-full bg-gray-200 text-gray-700 font-medium px-3 py-1 text-xs">
+                <Clock className="w-3 h-3" />
+                {post.readTime}
+              </span>
+            </div>
+
+            {/* Title */}
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-sans font-bold tracking-tight text-gray-900 dark:text-white mb-6">
+              {post.title}
+            </h1>
+
+            {/* Excerpt */}
+            <p className="text-lg md:text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto leading-relaxed">
+              {post.excerpt}
+            </p>
+
+            {/* Author and Date */}
+            <div className="mt-6 flex items-center justify-center gap-2 text-sm text-gray-500">
+              <span>By {post.author}</span>
+              <span>•</span>
+              <time dateTime={post.date}>
+                {new Date(post.date).toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
+                })}
+              </time>
+            </div>
+          </header>
+
+          {/* Featured Image */}
+          {post.image && (
+            <div className="mb-12 rounded-xl overflow-hidden">
+              <img
+                src={post.image}
+                alt={post.title}
+                className="w-full h-auto object-cover"
+              />
+            </div>
+          )}
+
+          {/* Content */}
+          <div className="prose prose-lg md:prose-xl dark:prose-invert max-w-none prose-headings:font-sans prose-headings:font-bold prose-headings:tracking-tight prose-p:leading-relaxed prose-a:text-blue-600 prose-a:no-underline hover:prose-a:underline prose-img:rounded-lg prose-code:bg-gray-100 prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-code:before:content-none prose-code:after:content-none">
+            <ReactMarkdown>{post.content}</ReactMarkdown>
+          </div>
+        </article>
+
+        {/* Related Posts or CTA could go here */}
+        <div className="mt-16 text-center">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 text-base font-medium text-gray-900 hover:text-gray-600 transition-colors"
+          >
+            <ArrowLeft className="w-5 h-5" />
+            Read more articles
+          </Link>
+        </div>
+      </main>
+
+      <Footer />
+    </>
   );
 }
