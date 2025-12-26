@@ -1,7 +1,6 @@
 'use client';
 
 import { useEditor, EditorContent } from '@tiptap/react';
-import Highlight from '@tiptap/extension-highlight';
 import StarterKit from '@tiptap/starter-kit';
 import Placeholder from '@tiptap/extension-placeholder';
 import { useEffect } from 'react';
@@ -30,7 +29,6 @@ export default function TipTapEditor({ content, onChange, placeholder = 'Start w
   const editor = useEditor({
     extensions: [
       StarterKit,
-      Highlight,
       Placeholder.configure({
         placeholder,
       }),
