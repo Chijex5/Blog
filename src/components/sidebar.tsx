@@ -57,7 +57,7 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
 
   return (
     <aside
-      className={`hidden md:block fixed left-0 top-0 h-screen bg-[#f4f1ed] border-r transition-all duration-300 ease-in-out z-40 ${
+      className={`hidden md:block fixed left-0 top-0 h-screen bg-[var(--color-warm-sidebar)] border-r transition-all duration-300 ease-in-out z-40 ${
         isCollapsed ? "w-[4.5rem] px-2" : "w-[15rem]"
       }`}
     >

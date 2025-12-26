@@ -1,8 +1,22 @@
 import type { Metadata } from "next";
+import { Inter, Instrument_Serif } from "next/font/google";
 import "./globals.css";
 import { SidebarProvider, SidebarWrapper } from "@/components/sidebar";
 import SidebarApp from "@/components/sidebar";
 import Footer from "@/components/Footer";
+
+const inter = Inter({ 
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
+});
+
+const instrumentSerif = Instrument_Serif({ 
+  weight: ["400"],
+  subsets: ["latin"],
+  variable: "--font-serif",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "My Personal Blog",
@@ -16,7 +30,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="antialiased">
+      <body className={`${inter.variable} ${instrumentSerif.variable} antialiased font-sans`}>
         <SidebarProvider>
           <SidebarApp />
           <SidebarWrapper>

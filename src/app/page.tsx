@@ -11,10 +11,10 @@ export default function Home() {
   const posts = getBlogPosts()
 
   return (
-    <main className="max-w-7xl mx-auto bg-[#f5f2f0] px-4 py-20">
+    <main className="max-w-7xl mx-auto bg-[var(--color-warm-bg)] px-4 py-20">
       {/* HERO */}
       <section className="text-center mb-20">
-        <span className="inline-block mb-6 rounded-full bg-[#ede8e6] px-4 py-1 text-sm">
+        <span className="inline-block mb-6 rounded-full bg-[var(--color-warm-accent)] px-4 py-1 text-sm">
           From the desk of Skylar
         </span>
 
