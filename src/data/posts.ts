@@ -1,4 +1,4 @@
-import { BlogPost } from '@/types/blog';
+import { BlogPost } from "@/types/blog";
 
 export const blogPosts: BlogPost[] = [
   {
@@ -43,6 +43,7 @@ Next.js with TypeScript is a powerful combination for building modern web applic
     `,
     date: '2024-12-20',
     author: 'Your Name',
+    image: 'https://framerusercontent.com/images/Wm2sQ1KRmjtWG0T2kgrNCoRpGNw.png',
     tags: ['Next.js', 'TypeScript', 'Web Development'],
     readTime: '5 min read'
   },
