@@ -1,4 +1,4 @@
-import PostEditor from '@/components/PostEditor';
+import AdminEditor from '@/components/AdminEditor';
 
 interface PageProps {
   params: Promise<{
@@ -8,5 +8,5 @@ interface PageProps {
 
 export default async function EditPost({ params }: PageProps) {
   const { id } = await params;
-  return <PostEditor postId={id} />;
+  return <AdminEditor postId={id} />;
 }
