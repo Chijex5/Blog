@@ -48,9 +48,9 @@ export default async function BlogPost({ params }: PageProps) {
           <header className="mb-12 text-center">
             {/* Tags and Read Time */}
             <div className="flex flex-wrap items-center justify-center gap-3 mb-6">
-              {post.tags.map((tag, index) => (
+              {post.tags.map((tag) => (
                 <span
-                  key={index}
+                  key={tag}
                   className="inline-flex items-center gap-1 rounded-full bg-[var(--color-warm-accent)] text-black font-medium px-3 py-1 text-xs"
                 >
                   <Tag className="w-3 h-3" />
