@@ -7,6 +7,7 @@ import { ArrowLeft, Eye, Save } from 'lucide-react';
 import RichEditor from '@/components/RichEditor';
 import TiptapRenderer from '@/components/TiptapRenderer';
 import { Button } from './ui/button';
+import { BlogPost } from '@/types/blog';
 
 // Calculate read time based on word count
 function calculateReadTime(content: string): string {
@@ -21,7 +22,7 @@ function generateId(): string {
   return `${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
 }
 
-export default function AdminEditor({ postId }: { postId?: string }) {
+export default function AdminEditor({ postId, postdata }: { postId?: string; postdata?: BlogPost }) {
   const router = useRouter();
   const [title, setTitle] = useState('');
   const [excerpt, setExcerpt] = useState('');
@@ -38,20 +39,15 @@ export default function AdminEditor({ postId }: { postId?: string }) {
 
   // Load existing post if editing
   useEffect(() => {
-    if (postId) {
-      // TODO: Load from database
-      const stored = localStorage.getItem(`post-${postId}`);
-      if (stored) {
-        const post = JSON.parse(stored);
-        setTitle(post.title || '');
-        setExcerpt(post.excerpt || '');
-        setAuthor(post.author || '');
-        setTags(post.tags?.join(', ') || '');
-        setImage(post.image || '');
-        setContent(post.content || '');
-      }
+    if (postdata) {
+        setTitle(postdata.title || '');
+        setExcerpt(postdata.excerpt || '');
+        setAuthor(postdata.author || '');
+        setTags(postdata.tags?.join(', ') || '');
+        setImage(postdata.image || '');
+        setContent(typeof postdata.content === 'string' ? postdata.content : JSON.stringify(postdata.content || {}));
     }
-  }, [postId]);
+  }, [postdata]);
 
   const handleSave = async () => {
     if (!title.trim() || !content.trim()) {
