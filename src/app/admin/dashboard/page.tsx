@@ -1,14 +1,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useSession, signOut } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { 
   Edit, 
   Trash2, 
   Plus, 
-  LogOut, 
-  User,
   FileText,
   Calendar,
   Tag,
@@ -181,35 +179,14 @@ export default function AdminDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-[var(--color-warm-bg)]">
+    <div className="min-h-screen py-8 px-4 max-w-7xl mx-auto">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-10 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-          <div className="flex items-center gap-4">
-            <Link href="/" className="text-2xl font-bold text-gray-900">
-              My Blog
-            </Link>
-            <span className="text-sm text-gray-500">Admin Dashboard</span>
-          </div>
-          
-          <div className="flex items-center gap-3">
-            <span className="text-sm text-gray-600">
-              <User className="w-4 h-4 inline mr-1" />
-              {session?.user?.name || session?.user?.email}
-            </span>
-            <button
-              onClick={() => signOut({ callbackUrl: '/admin/login' })}
-              className="inline-flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-gray-900 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors"
-            >
-              <LogOut className="w-4 h-4" />
-              Sign Out
-            </button>
-          </div>
-        </div>
-      </header>
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">Dashboard</h1>
+        <p className="text-gray-600">Manage your blog posts and content</p>
+      </div>
 
-      <main className="max-w-7xl mx-auto px-4 py-8">
-        {/* Stats Cards */}
+      {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
           <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
             <div className="flex items-center justify-between">
@@ -538,11 +515,10 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        {/* Help Text */}
-        <div className="mt-6 text-center text-sm text-gray-500">
-          <p>💡 Tip: You can only edit and delete your own posts</p>
-        </div>
-      </main>
+      {/* Help Text */}
+      <div className="mt-6 text-center text-sm text-gray-500">
+        <p>💡 Tip: You can only edit and delete your own posts</p>
+      </div>
     </div>
   );
 }
