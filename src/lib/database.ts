@@ -2,17 +2,28 @@ import { Pool } from 'pg';
 import fs from 'fs';
 import path from 'path';
 
+// Get SSL CA if available
+let sslCa: string | undefined;
+try {
+  const caPath = path.join(process.cwd(), 'ca.pem');
+  if (fs.existsSync(caPath)) {
+    sslCa = fs.readFileSync(caPath, "utf8");
+  }
+} catch (error) {
+  // CA file not available, will use environment variable if set
+}
+
 // PostgreSQL connection pool
 const pool = new Pool({
-  user: process.env.DATABASE_USER || ",",
+  user: process.env.DATABASE_USER || "",
   password: process.env.DATABASE_PASSWORD || "",
   host: process.env.DATABASE_HOST || "",
   port: Number(process.env.DATABASE_PORT) || 0,
   database: process.env.DATABASE_NAME || "",
-  ssl: { 
+  ssl: process.env.DATABASE_HOST ? { 
     rejectUnauthorized: false,
-    ca: process.env.DATABASE_SSL_CA || fs.readFileSync(path.join(process.cwd(), 'ca.pem'), "utf8"),
-   },
+    ca: process.env.DATABASE_SSL_CA || sslCa,
+  } : false,
 });
 
 export interface BlogPost {
