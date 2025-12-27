@@ -574,6 +574,66 @@ export const blogPosts: BlogPost[] = [
 ];
 
 /**
+ * Parse content - handles both HTML strings and TipTap JSON
+ */
+function parseContent(content: any): any {
+  if (!content) {
+    return { type: 'doc', content: [] };
+  }
+  
+  // If it's already an object, return it
+  if (typeof content === 'object' && content.type) {
+    return content;
+  }
+  
+  // If it's a string, try to parse as JSON
+  if (typeof content === 'string') {
+    // Check if it's HTML (starts with < tag)
+    if (content.trim().startsWith('<')) {
+      // Convert HTML to simple TipTap format
+      return {
+        type: 'doc',
+        content: [
+          {
+            type: 'paragraph',
+            content: [
+              {
+                type: 'text',
+                text: content.replace(/<[^>]*>/g, '') // Strip HTML tags for now
+              }
+            ]
+          }
+        ]
+      };
+    }
+    
+    // Try to parse as JSON
+    try {
+      const parsed = JSON.parse(content);
+      return parsed;
+    } catch (e) {
+      // If parsing fails, treat as plain text
+      return {
+        type: 'doc',
+        content: [
+          {
+            type: 'paragraph',
+            content: [
+              {
+                type: 'text',
+                text: content
+              }
+            ]
+          }
+        ]
+      };
+    }
+  }
+  
+  return content;
+}
+
+/**
  * Get all blog posts from database, with fallback to static posts
  */
 export async function getBlogPosts(): Promise<BlogPost[]> {
@@ -586,7 +646,7 @@ export async function getBlogPosts(): Promise<BlogPost[]> {
         id: post.id,
         title: post.title,
         excerpt: post.excerpt,
-        content: typeof post.content === 'string' ? JSON.parse(post.content) : post.content,
+        content: parseContent(post.content),
         date: typeof post.date === 'string' ? post.date : post.date.toISOString(),
         author: post.author,
         image: post.image,
@@ -615,7 +675,7 @@ export async function getBlogPost(id: string): Promise<BlogPost | undefined> {
         id: dbPost.id,
         title: dbPost.title,
         excerpt: dbPost.excerpt,
-        content: typeof dbPost.content === 'string' ? JSON.parse(dbPost.content) : dbPost.content,
+        content: parseContent(dbPost.content),
         date: typeof dbPost.date === 'string' ? dbPost.date : dbPost.date.toISOString(),
         author: dbPost.author,
         image: dbPost.image,

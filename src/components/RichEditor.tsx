@@ -44,13 +44,25 @@ export default function RichEditor({ content, onChange, placeholder = 'Start wri
       },
     },
     onUpdate: ({ editor }) => {
-      onChange(editor.getHTML());
+      // Return JSON format for TipTap content
+      onChange(JSON.stringify(editor.getJSON()));
     },
   });
 
   useEffect(() => {
-    if (editor && content !== editor.getHTML()) {
-      editor.commands.setContent(content);
+    if (editor && content) {
+      try {
+        // Try to parse as JSON first
+        const jsonContent = typeof content === 'string' ? JSON.parse(content) : content;
+        if (JSON.stringify(jsonContent) !== JSON.stringify(editor.getJSON())) {
+          editor.commands.setContent(jsonContent);
+        }
+      } catch (e) {
+        // If not JSON, treat as HTML
+        if (content !== editor.getHTML()) {
+          editor.commands.setContent(content);
+        }
+      }
     }
   }, [content, editor]);
 
