@@ -63,7 +63,7 @@ export default function UnsubscribePage() {
       } else {
         setMessage({ type: 'error', text: data.error || 'Failed to unsubscribe' });
       }
-    } catch (error) {
+    } catch {
       setMessage({ type: 'error', text: 'Something went wrong. Please try again.' });
     } finally {
       setLoading(false);

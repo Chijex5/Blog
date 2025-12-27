@@ -31,7 +31,7 @@ export default function Footer() {
       } else {
         setMessage({ type: 'error', text: data.error || 'Failed to subscribe' });
       }
-    } catch (error) {
+    } catch {
       setMessage({ type: 'error', text: 'Something went wrong. Please try again.' });
     } finally {
       setLoading(false);
