@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { useSession, signOut } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { 
   Edit, 
@@ -21,7 +20,6 @@ import { BlogPost } from '@/types/blog';
 
 export default function AdminDashboard() {
   const { data: session, status } = useSession();
-  const router = useRouter();
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [filteredPosts, setFilteredPosts] = useState<BlogPost[]>([]);
   const [isLoading, setIsLoading] = useState(true);
