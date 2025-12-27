@@ -5,6 +5,7 @@ import SidebarApp from "@/components/sidebar";
 import Footer from "@/components/Footer";
 import { Lora, Source_Serif_4, Manrope } from 'next/font/google'
 import MobileNav from "@/components/mobile-nav";
+import AuthProvider from "@/components/AuthProvider";
 
 export const sourceSerif = Source_Serif_4({
   subsets: ['latin'],
@@ -32,13 +33,15 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${sourceSerif.variable} ${manrope.variable}`}>
       <body className="antialiased font-sans">
-        <SidebarProvider>
-          <SidebarApp />
-          <SidebarWrapper>
-            <div className="flex-1 w-full bg-[var(--color-warm-bg)] transition-all duration-300">{children}</div>
-          </SidebarWrapper>
-          <MobileNav />
-        </SidebarProvider>
+        <AuthProvider>
+          <SidebarProvider>
+            <SidebarApp />
+            <SidebarWrapper>
+              <div className="flex-1 w-full bg-[var(--color-warm-bg)] transition-all duration-300">{children}</div>
+            </SidebarWrapper>
+            <MobileNav />
+          </SidebarProvider>
+        </AuthProvider>
       </body>
     </html>
   );

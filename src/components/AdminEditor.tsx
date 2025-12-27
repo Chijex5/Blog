@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { ArrowLeft, Eye, Save } from 'lucide-react';
 import RichEditor from '@/components/RichEditor';
@@ -17,13 +18,9 @@ function calculateReadTime(content: string): string {
   return `${minutes} min read`;
 }
 
-// Generate unique ID
-function generateId(): string {
-  return `${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
-}
-
 export default function AdminEditor({ postId, postdata }: { postId?: string; postdata?: BlogPost }) {
   const router = useRouter();
+  const { data: session } = useSession();
   const [title, setTitle] = useState('');
   const [excerpt, setExcerpt] = useState('');
   const [author, setAuthor] = useState('');
@@ -67,9 +64,9 @@ export default function AdminEditor({ postId, postdata }: { postId?: string; pos
     setSaveMessage('');
 
     try {
-      const id = postId || generateId();
+      // Server will generate UUID if no postId
       const post = {
-        id,
+        id: postId, // Only include if editing existing post
         title: title.trim().slice(0, 200),
         excerpt: excerpt.trim().slice(0, 500),
         content,
@@ -100,26 +97,8 @@ export default function AdminEditor({ postId, postdata }: { postId?: string; pos
     } catch (error) {
       console.error('Error saving post:', error);
       
-      // Fallback to localStorage
-      const id = postId || generateId();
-      const post = {
-        id,
-        title,
-        excerpt,
-        content,
-        author: author || 'Anonymous',
-        tags: tagsArray,
-        image,
-        readTime,
-        date: new Date().toISOString(),
-      };
-      
-      localStorage.setItem(`post-${id}`, JSON.stringify(post));
-      
-      setSaveMessage('Post saved locally (database unavailable)');
-      setTimeout(() => {
-        router.push(`/blog/${id}`);
-      }, 1500);
+      setSaveMessage('Failed to save post. Please try again.');
+      setTimeout(() => setSaveMessage(''), 3000);
     } finally {
       setIsSaving(false);
     }
