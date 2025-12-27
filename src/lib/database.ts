@@ -2,17 +2,28 @@ import { Pool } from 'pg';
 import fs from 'fs';
 import path from 'path';
 
+// Get SSL CA if available
+let sslCa: string | undefined;
+try {
+  const caPath = path.join(process.cwd(), 'ca.pem');
+  if (fs.existsSync(caPath)) {
+    sslCa = fs.readFileSync(caPath, "utf8");
+  }
+} catch (error) {
+  // CA file not available, will use environment variable if set
+}
+
 // PostgreSQL connection pool
 const pool = new Pool({
-  user: process.env.DATABASE_USER || ",",
+  user: process.env.DATABASE_USER || "",
   password: process.env.DATABASE_PASSWORD || "",
   host: process.env.DATABASE_HOST || "",
   port: Number(process.env.DATABASE_PORT) || 0,
   database: process.env.DATABASE_NAME || "",
-  ssl: { 
+  ssl: process.env.DATABASE_HOST ? { 
     rejectUnauthorized: false,
-    ca: process.env.DATABASE_SSL_CA || fs.readFileSync(path.join(process.cwd(), 'ca.pem'), "utf8"),
-   },
+    ca: process.env.DATABASE_SSL_CA || sslCa,
+  } : false,
 });
 
 export interface BlogPost {
@@ -24,8 +35,11 @@ export interface BlogPost {
   tags: string[];
   image?: string;
   read_time: string;
+  slug: string;
   date: string;
   created_at: Date;
+  created_by?: string;
+  updated_by?: string;
   updated_at: Date;
 }
 
@@ -63,6 +77,15 @@ export async function initDatabase() {
   }
 }
 
+export async function slugExists(slug: string): Promise<boolean> {
+  const client = await pool.connect();
+  const result = await client.query<{ exists: boolean }>(
+    'SELECT EXISTS(SELECT 1 FROM posts WHERE slug = $1) as exists',
+    [slug]
+  );
+  return result.rows[0]?.exists || false;
+}
+
 /**
  * Save or update a blog post
  */
@@ -70,21 +93,51 @@ export async function savePost(post: Omit<BlogPost, 'created_at' | 'updated_at'>
   const client = await pool.connect();
   try {
     const result = await client.query(
-      `INSERT INTO blog_posts (id, title, excerpt, content, author, tags, image, read_time, date, updated_at)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, CURRENT_TIMESTAMP)
-       ON CONFLICT (id) 
-       DO UPDATE SET 
-         title = EXCLUDED.title,
-         excerpt = EXCLUDED.excerpt,
-         content = EXCLUDED.content,
-         author = EXCLUDED.author,
-         tags = EXCLUDED.tags,
-         image = EXCLUDED.image,
-         read_time = EXCLUDED.read_time,
-         date = EXCLUDED.date,
-         updated_at = CURRENT_TIMESTAMP
-       RETURNING *`,
-      [post.id, post.title, post.excerpt, post.content, post.author, post.tags, post.image, post.read_time, post.date]
+      `INSERT INTO blog_posts (
+        title,
+        excerpt,
+        content,
+        author,
+        tags,
+        image,
+        read_time,
+        date,
+        slug,
+        created_by,
+        updated_by
+      )
+      VALUES (
+        $1, $2, $3, $4, $5,
+        $6, $7, $8, $9, $10, $11
+      )
+      ON CONFLICT (id)
+      DO UPDATE SET
+        title       = EXCLUDED.title,
+        excerpt     = EXCLUDED.excerpt,
+        content     = EXCLUDED.content,
+        author      = EXCLUDED.author,
+        slug        = EXCLUDED.slug,
+        tags        = EXCLUDED.tags,
+        image       = EXCLUDED.image,
+        read_time   = EXCLUDED.read_time,
+        date        = EXCLUDED.date,
+        updated_at  = CURRENT_TIMESTAMP,
+        updated_by  = EXCLUDED.updated_by
+      RETURNING *;`,
+      [
+        post.title,      // $1
+        post.excerpt,    // $2
+        post.content,    // $3
+        post.author,     // $4
+        post.tags,       // $5
+        post.image,      // $6
+        post.read_time,  // $7
+        post.date,       // $8
+        post.slug,       // $9
+        post.created_by, // $10 created_by
+        post.updated_by  // $11 updated_by
+      ]
+
     );
     
     return result.rows[0];

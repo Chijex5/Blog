@@ -1,0 +1,38 @@
+{
+    "sqltools.connections": [
+        {
+            "pgOptions": {
+                "ssl": {
+                    "rejectUnauthorized": true,
+                    "ca": "-----BEGIN CERTIFICATE----- MIIEQTCCAqmgAwIBAgIUC72TPpGWV8HQnKh5hHupElXzaEIwDQYJKoZIhvcNAQEM BQAwOjE4MDYGA1UEAwwvMWVjZDdhN2ItYmJiMS00MDQ5LWIyNzItY2RlZmI3OTA4 ZGI0IFByb2plY3QgQ0EwHhcNMjQxMDAzMDI1MTEyWhcNMzQxMDAxMDI1MTEyWjA6 MTgwNgYDVQQDDC8xZWNkN2E3Yi1iYmIxLTQwNDktYjI3Mi1jZGVmYjc5MDhkYjQg UHJvamVjdCBDQTCCAaIwDQYJKoZIhvcNAQEBBQADggGPADCCAYoCggGBAK6X7vdX Fz1mSQBHUlcLA8QDxIy4IIa3kXL6JGSPyEdSh15eyswDLHVqyr8cjH8sznvPSLL+ s4zzQUECx/m+Oilijc/dsoWqKm16wNj+r0IG7PsD8q+h9x6Na1t0vImWKWKKPKgZ DwbgOONor1UVRbaQFUCi6bwJ3J7Tw1czw0E2FAyh/jKxH0++d1LjjnHcfE1q6YuG Gr6VXxzcjJBzdAGxuIhERaOt7Dvpru+3xX6qzeBxZgPEfGar24GAZJysoFUjAIbO YGgfsjTxaGC6HPoBNm+0BOXBUUE3cYLsbPUE9e8aCLWUFgJRTOV5Uhv5A6eQCsS6 Hl7u7JNhzj1SC/gOtroJnSZ3z+OHj0uWTK2NY1WaAYOsruc8Od5VW9H8wxBUPIjW RvjBxu8K91jrA7iEnCYhgzEOOz1G/1nO98s1QpXIvFz0ep2F1R1ON8sOB6q7gdVI mb14cXr0/SeWMB5k1UST+8ErBwv2WZyNHePuag5803iEjm4i3vkRgfR4CwIDAQAB oz8wPTAdBgNVHQ4EFgQUTSTcY2Jww9eY3cB8AXlZ4ILB24gwDwYDVR0TBAgwBgEB /wIBADALBgNVHQ8EBAMCAQYwDQYJKoZIhvcNAQEMBQADggGBAFcXeCkq5d36nx5W Zlq6WJ9cbKrjY/JaRcwehULhsYkbreSA97J6U51NFTgTHdbaz3A0PvA25zpYvSeI dOrOFj9TkxbfG2B81IsZsgTsEzy3bI5S1sBCbHWAfNl+Pocz5rFmj9iyxbins2UX EXT6A7K6U1bpFz4W3jozb/g+ArZbnIOfoT+TF2ILdP6sMXtBr9vM6F3wmVkUXtsG +4CN2fAy7JV7pgAsXrpfHQ/ovL5fxAOkNA1Gq2rTDswb1DO5rPbAfDYKTP1KOWMo GWudgBgoDGaGa+/catwS+yenxf4kCxwPIN9cpHiHtC5DsAQEpijs7KnQLnZOn9ci Lbwwevs9lfFHvpADPJiQiUZwhhS/qdEJqsVr/pFPzb1Gdg0kSYdrJindwCnWjQTg CUqcDZzHgia5T3R+Ep/VeCGyKqZ7UH/3qMKyhr2ij8kNC2Iz2+yiJzI1ZGvjUbDR OpCiPu0zT69hHFET12gxi9shPdXneycYVqLpjiMZZR9OR8TcFQ== -----END CERTIFICATE-----"
+                }
+            },
+            "ssh": "Disabled",
+            "previewLimit": 50,
+            "server": "pg-2e37cf45-datathon-112cbv.i.aivencloud.com",
+            "port": 23331,
+            "driver": "PostgreSQL",
+            "name": "My Blog",
+            "group": "Group1",
+            "database": "myBlog",
+            "username": "avnadmin"
+        },
+        {
+            "pgOptions": {
+                "ssl": {
+                    "rejectUnauthorized": true,
+                    "ca": "ca.pem"
+                }
+            },
+            "ssh": "Disabled",
+            "previewLimit": 50,
+            "server": "pg-2e37cf45-datathon-112cbv.i.aivencloud.com",
+            "port": 23331,
+            "driver": "PostgreSQL",
+            "name": "My Blog2",
+            "group": "Group1",
+            "database": "myBlog",
+            "username": "avnadmin"
+        }
+    ]
+}

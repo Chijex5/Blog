@@ -2,11 +2,13 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { ArrowLeft, Eye, Save } from 'lucide-react';
 import RichEditor from '@/components/RichEditor';
 import TiptapRenderer from '@/components/TiptapRenderer';
 import { Button } from './ui/button';
+import { BlogPost } from '@/types/blog';
 
 // Calculate read time based on word count
 function calculateReadTime(content: string): string {
@@ -16,13 +18,9 @@ function calculateReadTime(content: string): string {
   return `${minutes} min read`;
 }
 
-// Generate unique ID
-function generateId(): string {
-  return `${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
-}
-
-export default function AdminEditor({ postId }: { postId?: string }) {
+export default function AdminEditor({ postId, postdata }: { postId?: string; postdata?: BlogPost }) {
   const router = useRouter();
+  const { data: session } = useSession();
   const [title, setTitle] = useState('');
   const [excerpt, setExcerpt] = useState('');
   const [author, setAuthor] = useState('');
@@ -38,20 +36,15 @@ export default function AdminEditor({ postId }: { postId?: string }) {
 
   // Load existing post if editing
   useEffect(() => {
-    if (postId) {
-      // TODO: Load from database
-      const stored = localStorage.getItem(`post-${postId}`);
-      if (stored) {
-        const post = JSON.parse(stored);
-        setTitle(post.title || '');
-        setExcerpt(post.excerpt || '');
-        setAuthor(post.author || '');
-        setTags(post.tags?.join(', ') || '');
-        setImage(post.image || '');
-        setContent(post.content || '');
-      }
+    if (postdata) {
+        setTitle(postdata.title || '');
+        setExcerpt(postdata.excerpt || '');
+        setAuthor(postdata.author || '');
+        setTags(postdata.tags?.join(', ') || '');
+        setImage(postdata.image || '');
+        setContent(typeof postdata.content === 'string' ? postdata.content : JSON.stringify(postdata.content || {}));
     }
-  }, [postId]);
+  }, [postdata]);
 
   const handleSave = async () => {
     if (!title.trim() || !content.trim()) {
@@ -60,19 +53,26 @@ export default function AdminEditor({ postId }: { postId?: string }) {
       return;
     }
 
+    // Validate image URL if provided
+    if (image && !image.match(/^https?:\/\/.+/)) {
+      setSaveMessage('Please enter a valid image URL starting with http:// or https://');
+      setTimeout(() => setSaveMessage(''), 3000);
+      return;
+    }
+
     setIsSaving(true);
     setSaveMessage('');
 
     try {
-      const id = postId || generateId();
+      // Server will generate UUID if no postId
       const post = {
-        id,
-        title,
-        excerpt,
+        id: postId, // Only include if editing existing post
+        title: title.trim().slice(0, 200),
+        excerpt: excerpt.trim().slice(0, 500),
         content,
-        author: author || 'Anonymous',
+        author: (author || 'Anonymous').trim().slice(0, 100),
         tags: tagsArray,
-        image,
+        image: image.trim(),
         readTime,
         date: new Date().toISOString(),
       };
@@ -97,26 +97,8 @@ export default function AdminEditor({ postId }: { postId?: string }) {
     } catch (error) {
       console.error('Error saving post:', error);
       
-      // Fallback to localStorage
-      const id = postId || generateId();
-      const post = {
-        id,
-        title,
-        excerpt,
-        content,
-        author: author || 'Anonymous',
-        tags: tagsArray,
-        image,
-        readTime,
-        date: new Date().toISOString(),
-      };
-      
-      localStorage.setItem(`post-${id}`, JSON.stringify(post));
-      
-      setSaveMessage('Post saved locally (database unavailable)');
-      setTimeout(() => {
-        router.push(`/blog/${id}`);
-      }, 1500);
+      setSaveMessage('Failed to save post. Please try again.');
+      setTimeout(() => setSaveMessage(''), 3000);
     } finally {
       setIsSaving(false);
     }
@@ -183,13 +165,14 @@ export default function AdminEditor({ postId }: { postId?: string }) {
             {/* Title */}
             <div>
               <label className="block text-sm font-medium text-gray-900 mb-2">
-                Title
+                Title <span className="text-gray-500">({title.length}/200)</span>
               </label>
               <input
                 type="text"
                 value={title}
-                onChange={(e) => setTitle(e.target.value)}
+                onChange={(e) => setTitle(e.target.value.slice(0, 200))}
                 placeholder="Enter post title"
+                maxLength={200}
                 className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-900 font-sans"
               />
             </div>
@@ -197,13 +180,14 @@ export default function AdminEditor({ postId }: { postId?: string }) {
             {/* Excerpt */}
             <div>
               <label className="block text-sm font-medium text-gray-900 mb-2">
-                Excerpt
+                Excerpt <span className="text-gray-500">({excerpt.length}/500)</span>
               </label>
               <textarea
                 value={excerpt}
-                onChange={(e) => setExcerpt(e.target.value)}
+                onChange={(e) => setExcerpt(e.target.value.slice(0, 500))}
                 placeholder="A brief description of your post"
                 rows={3}
+                maxLength={500}
                 className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-900 font-sans resize-none"
               />
             </div>
@@ -211,13 +195,14 @@ export default function AdminEditor({ postId }: { postId?: string }) {
             {/* Author */}
             <div>
               <label className="block text-sm font-medium text-gray-900 mb-2">
-                Author
+                Author <span className="text-gray-500">({author.length}/100)</span>
               </label>
               <input
                 type="text"
                 value={author}
-                onChange={(e) => setAuthor(e.target.value)}
+                onChange={(e) => setAuthor(e.target.value.slice(0, 100))}
                 placeholder="Your name"
+                maxLength={100}
                 className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-900 font-sans"
               />
             </div>
@@ -242,12 +227,16 @@ export default function AdminEditor({ postId }: { postId?: string }) {
                 Image URL (optional)
               </label>
               <input
-                type="text"
+                type="url"
                 value={image}
                 onChange={(e) => setImage(e.target.value)}
                 placeholder="https://example.com/image.jpg"
+                pattern="https?://.+"
                 className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-900 font-sans"
               />
+              {image && !image.match(/^https?:\/\/.+/) && (
+                <p className="mt-1 text-sm text-red-600">Please enter a valid URL starting with http:// or https://</p>
+              )}
             </div>
 
             {/* Content Editor */}
