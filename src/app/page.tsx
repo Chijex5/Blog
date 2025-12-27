@@ -6,11 +6,29 @@ import { Badge } from "@/components/ui/badge"
 import BadgeComponent from "./BadgeComponent"
 import Footer from "@/components/Footer"
 import { RiSearchLine } from "react-icons/ri";
+import type { Metadata } from 'next';
 
 const categories = ["All", "Audience", "Writing", "Business", "Mindset"]
 
-export default function Home() {
-  const posts = getBlogPosts()
+// SEO metadata for home page
+export const metadata: Metadata = {
+  title: "My Personal Blog | Ideas and Insights for Modern Creators",
+  description: "A modern personal blog featuring articles on web development, TypeScript, Next.js, Tailwind CSS, and more. Ideas and insights for the modern creator.",
+  keywords: ["blog", "web development", "Next.js", "TypeScript", "Tailwind CSS", "React", "programming"],
+  openGraph: {
+    title: "My Personal Blog | Ideas and Insights for Modern Creators",
+    description: "A modern personal blog featuring articles on web development, TypeScript, Next.js, Tailwind CSS, and more.",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "My Personal Blog | Ideas and Insights for Modern Creators",
+    description: "A modern personal blog featuring articles on web development, TypeScript, Next.js, Tailwind CSS, and more.",
+  },
+};
+
+export default async function Home() {
+  const posts = await getBlogPosts()
 
   return (
     <main className="max-w-7xl mx-auto bg-[var(--color-warm-bg)] md:max-w-[80vw] px-4 py-20">
