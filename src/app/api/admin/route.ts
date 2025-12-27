@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth-options';
 import bcrypt from 'bcryptjs';
 import pool from '@/lib/database';
+import { sendAdminCreationEmail } from '@/lib/email';
 
 export async function POST(request: NextRequest) {
   try {
@@ -79,6 +80,19 @@ export async function POST(request: NextRequest) {
       );
 
       const newUser = result.rows[0];
+
+      // Send welcome email to the new admin (asynchronously)
+      sendAdminCreationEmail(email, name.trim(), password)
+        .then(result => {
+          if (result.success) {
+            console.log(`Welcome email sent to new admin: ${email}`);
+          } else {
+            console.error(`Failed to send welcome email to ${email}:`, result.error);
+          }
+        })
+        .catch(error => {
+          console.error('Error sending admin creation email:', error);
+        });
 
       return NextResponse.json(
         {
