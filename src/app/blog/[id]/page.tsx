@@ -5,6 +5,7 @@ import { ArrowLeft, Clock, Tag } from 'lucide-react';
 import ScrollProgressBar from '@/components/ScrollProgressBar';
 import Footer from '@/components/Footer';
 import TiptapRenderer from '@/components/TiptapRenderer';
+import type { Metadata } from 'next';
 
 interface PageProps {
   params: Promise<{
@@ -12,23 +13,110 @@ interface PageProps {
   }>;
 }
 
+// Generate static params for all posts
 export async function generateStaticParams() {
-  const posts = getBlogPosts();
+  const posts = await getBlogPosts();
   return posts.map((post) => ({
     id: post.id,
   }));
 }
 
+// Generate metadata for SEO
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { id } = await params;
+  const post = await getBlogPost(id);
+
+  if (!post) {
+    return {
+      title: 'Post Not Found',
+      description: 'The requested blog post could not be found',
+    };
+  }
+
+  // Extract text from content for description
+  const getTextFromContent = (content: any): string => {
+    if (!content || !content.content) return post.excerpt;
+    
+    let text = '';
+    const extractText = (node: any) => {
+      if (node.type === 'text') {
+        text += node.text + ' ';
+      }
+      if (node.content) {
+        node.content.forEach(extractText);
+      }
+    };
+    
+    content.content.forEach(extractText);
+    return text.trim().slice(0, 160) || post.excerpt;
+  };
+
+  const description = getTextFromContent(post.content);
+
+  return {
+    title: `${post.title} | My Personal Blog`,
+    description: description,
+    keywords: post.tags.join(', '),
+    authors: [{ name: post.author }],
+    openGraph: {
+      title: post.title,
+      description: description,
+      type: 'article',
+      publishedTime: post.date,
+      authors: [post.author],
+      tags: post.tags,
+      images: post.image ? [
+        {
+          url: post.image,
+          alt: post.title,
+        }
+      ] : [],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: post.title,
+      description: description,
+      images: post.image ? [post.image] : [],
+    },
+  };
+}
+
 export default async function BlogPost({ params }: PageProps) {
   const { id } = await params;
-  const post = getBlogPost(id);
+  const post = await getBlogPost(id);
 
   if (!post) {
     notFound();
   }
 
+  // JSON-LD structured data for SEO
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: post.title,
+    description: post.excerpt,
+    image: post.image,
+    datePublished: post.date,
+    dateModified: post.date,
+    author: {
+      '@type': 'Person',
+      name: post.author,
+    },
+    publisher: {
+      '@type': 'Person',
+      name: post.author,
+    },
+    keywords: post.tags.join(', '),
+  };
+
   return (
     <>
+      {/* JSON-LD for SEO */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      
       <ScrollProgressBar />
       
       <main className="max-w-3xl mx-auto bg-[var(--color-warm-bg)] px-4 py-12 md:py-20">

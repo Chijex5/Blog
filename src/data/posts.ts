@@ -1,5 +1,7 @@
 import { BlogPost } from "@/types/blog";
+import { getAllPosts, getPost } from '@/lib/database';
 
+// Fallback static posts (used if database is unavailable)
 export const blogPosts: BlogPost[] = [
   {
     id: '1',
@@ -571,10 +573,120 @@ export const blogPosts: BlogPost[] = [
   }
 ];
 
-export function getBlogPosts(): BlogPost[] {
+/**
+ * Parse content - handles both HTML strings and TipTap JSON
+ */
+function parseContent(content: any): any {
+  if (!content) {
+    return { type: 'doc', content: [] };
+  }
+  
+  // If it's already an object, return it
+  if (typeof content === 'object' && content.type) {
+    return content;
+  }
+  
+  // If it's a string, try to parse as JSON
+  if (typeof content === 'string') {
+    // Check if it's HTML (starts with < tag)
+    if (content.trim().startsWith('<')) {
+      // Convert HTML to simple TipTap format
+      return {
+        type: 'doc',
+        content: [
+          {
+            type: 'paragraph',
+            content: [
+              {
+                type: 'text',
+                text: content.replace(/<[^>]*>/g, '') // Strip HTML tags for now
+              }
+            ]
+          }
+        ]
+      };
+    }
+    
+    // Try to parse as JSON
+    try {
+      const parsed = JSON.parse(content);
+      return parsed;
+    } catch (e) {
+      // If parsing fails, treat as plain text
+      return {
+        type: 'doc',
+        content: [
+          {
+            type: 'paragraph',
+            content: [
+              {
+                type: 'text',
+                text: content
+              }
+            ]
+          }
+        ]
+      };
+    }
+  }
+  
+  return content;
+}
+
+/**
+ * Get all blog posts from database, with fallback to static posts
+ */
+export async function getBlogPosts(): Promise<BlogPost[]> {
+  try {
+    const dbPosts = await getAllPosts();
+    
+    if (dbPosts && dbPosts.length > 0) {
+      // Convert database posts to BlogPost format
+      return dbPosts.map(post => ({
+        id: post.id,
+        title: post.title,
+        excerpt: post.excerpt,
+        content: parseContent(post.content),
+        date: typeof post.date === 'string' ? post.date : post.date.toISOString(),
+        author: post.author,
+        image: post.image,
+        tags: post.tags,
+        readTime: post.read_time,
+      }));
+    }
+  } catch (error) {
+    console.error('Error fetching posts from database, using fallback:', error);
+  }
+  
+  // Fallback to static posts
   return blogPosts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 }
 
-export function getBlogPost(id: string): BlogPost | undefined {
+/**
+ * Get a single blog post by ID from database, with fallback to static posts
+ */
+export async function getBlogPost(id: string): Promise<BlogPost | undefined> {
+  try {
+    const dbPost = await getPost(id);
+    
+    if (dbPost) {
+      // Convert database post to BlogPost format
+      return {
+        id: dbPost.id,
+        title: dbPost.title,
+        excerpt: dbPost.excerpt,
+        content: parseContent(dbPost.content),
+        date: typeof dbPost.date === 'string' ? dbPost.date : dbPost.date.toISOString(),
+        author: dbPost.author,
+        image: dbPost.image,
+        tags: dbPost.tags,
+        readTime: dbPost.read_time,
+      };
+    }
+  } catch (error) {
+    console.error(`Error fetching post ${id} from database, using fallback:`, error);
+  }
+  
+  // Fallback to static post
   return blogPosts.find(post => post.id === id);
 }
