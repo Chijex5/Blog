@@ -92,6 +92,46 @@ export async function slugExists(slug: string): Promise<boolean> {
 export async function savePost(post: Omit<BlogPost, 'created_at' | 'updated_at'>): Promise<BlogPost> {
   const client = await pool.connect();
   try {
+    // If id is provided, try to update first
+    if (post.id) {
+      const updateResult = await client.query(
+        `UPDATE blog_posts SET
+          title = $1,
+          excerpt = $2,
+          content = $3,
+          author = $4,
+          slug = $5,
+          tags = $6,
+          image = $7,
+          read_time = $8,
+          date = $9,
+          updated_at = CURRENT_TIMESTAMP,
+          updated_by = $10
+        WHERE id = $11
+        RETURNING *;`,
+        [
+          post.title,
+          post.excerpt,
+          post.content,
+          post.author,
+          post.slug,
+          post.tags,
+          post.image,
+          post.read_time,
+          post.date,
+          post.updated_by,
+          post.id
+        ]
+      );
+      
+      if (updateResult.rows.length > 0) {
+        return updateResult.rows[0];
+      } else {
+        console.warn(`Update failed: Post with id ${post.id} not found`);
+      }
+    }
+    
+    // If no id provided or update didn't find a row, insert new post
     const result = await client.query(
       `INSERT INTO blog_posts (
         title,
@@ -110,19 +150,6 @@ export async function savePost(post: Omit<BlogPost, 'created_at' | 'updated_at'>
         $1, $2, $3, $4, $5,
         $6, $7, $8, $9, $10, $11
       )
-      ON CONFLICT (id)
-      DO UPDATE SET
-        title       = EXCLUDED.title,
-        excerpt     = EXCLUDED.excerpt,
-        content     = EXCLUDED.content,
-        author      = EXCLUDED.author,
-        slug        = EXCLUDED.slug,
-        tags        = EXCLUDED.tags,
-        image       = EXCLUDED.image,
-        read_time   = EXCLUDED.read_time,
-        date        = EXCLUDED.date,
-        updated_at  = CURRENT_TIMESTAMP,
-        updated_by  = EXCLUDED.updated_by
       RETURNING *;`,
       [
         post.title,      // $1
@@ -137,7 +164,6 @@ export async function savePost(post: Omit<BlogPost, 'created_at' | 'updated_at'>
         post.created_by, // $10 created_by
         post.updated_by  // $11 updated_by
       ]
-
     );
     
     return result.rows[0];

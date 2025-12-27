@@ -23,5 +23,8 @@ export const config = {
   matcher: [
     '/admin/create/:path*',
     '/admin/edit/:path*',
+    '/admin/dashboard',
+    '/admin/admins',
+    '/admin/posts',
   ],
 };
