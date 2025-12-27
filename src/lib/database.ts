@@ -1,9 +1,18 @@
 import { Pool } from 'pg';
+import fs from 'fs';
+import path from 'path';
 
 // PostgreSQL connection pool
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : undefined,
+  user: process.env.DATABASE_USER || ",",
+  password: process.env.DATABASE_PASSWORD || "",
+  host: process.env.DATABASE_HOST || "",
+  port: Number(process.env.DATABASE_PORT) || 0,
+  database: process.env.DATABASE_NAME || "",
+  ssl: { 
+    rejectUnauthorized: false,
+    ca: process.env.DATABASE_SSL_CA || fs.readFileSync(path.join(process.cwd(), 'ca.pem'), "utf8"),
+   },
 });
 
 export interface BlogPost {

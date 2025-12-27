@@ -5,7 +5,7 @@ import StarterKit from '@tiptap/starter-kit';
 import { JSONContent } from '@tiptap/core';
 
 interface TiptapRendererProps {
-  content: JSONContent;
+  content: string | JSONContent;
 }
 
 export default function TiptapRenderer({ content }: TiptapRendererProps) {
