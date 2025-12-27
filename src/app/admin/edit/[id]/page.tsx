@@ -13,7 +13,6 @@ export default async function EditPost({ params }: PageProps) {
   const post = await getBlogPost(id);
   if (!post) {
     return notFound();
-  } 
-  console.log('Editing post with ID:', id);
+  }
   return <AdminEditor postId={id} postdata={post} />;
 }

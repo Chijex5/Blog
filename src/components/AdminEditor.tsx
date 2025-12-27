@@ -56,6 +56,13 @@ export default function AdminEditor({ postId, postdata }: { postId?: string; pos
       return;
     }
 
+    // Validate image URL if provided
+    if (image && !image.match(/^https?:\/\/.+/)) {
+      setSaveMessage('Please enter a valid image URL starting with http:// or https://');
+      setTimeout(() => setSaveMessage(''), 3000);
+      return;
+    }
+
     setIsSaving(true);
     setSaveMessage('');
 
@@ -63,12 +70,12 @@ export default function AdminEditor({ postId, postdata }: { postId?: string; pos
       const id = postId || generateId();
       const post = {
         id,
-        title,
-        excerpt,
+        title: title.trim().slice(0, 200),
+        excerpt: excerpt.trim().slice(0, 500),
         content,
-        author: author || 'Anonymous',
+        author: (author || 'Anonymous').trim().slice(0, 100),
         tags: tagsArray,
-        image,
+        image: image.trim(),
         readTime,
         date: new Date().toISOString(),
       };
@@ -179,13 +186,14 @@ export default function AdminEditor({ postId, postdata }: { postId?: string; pos
             {/* Title */}
             <div>
               <label className="block text-sm font-medium text-gray-900 mb-2">
-                Title
+                Title <span className="text-gray-500">({title.length}/200)</span>
               </label>
               <input
                 type="text"
                 value={title}
-                onChange={(e) => setTitle(e.target.value)}
+                onChange={(e) => setTitle(e.target.value.slice(0, 200))}
                 placeholder="Enter post title"
+                maxLength={200}
                 className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-900 font-sans"
               />
             </div>
@@ -193,13 +201,14 @@ export default function AdminEditor({ postId, postdata }: { postId?: string; pos
             {/* Excerpt */}
             <div>
               <label className="block text-sm font-medium text-gray-900 mb-2">
-                Excerpt
+                Excerpt <span className="text-gray-500">({excerpt.length}/500)</span>
               </label>
               <textarea
                 value={excerpt}
-                onChange={(e) => setExcerpt(e.target.value)}
+                onChange={(e) => setExcerpt(e.target.value.slice(0, 500))}
                 placeholder="A brief description of your post"
                 rows={3}
+                maxLength={500}
                 className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-900 font-sans resize-none"
               />
             </div>
@@ -207,13 +216,14 @@ export default function AdminEditor({ postId, postdata }: { postId?: string; pos
             {/* Author */}
             <div>
               <label className="block text-sm font-medium text-gray-900 mb-2">
-                Author
+                Author <span className="text-gray-500">({author.length}/100)</span>
               </label>
               <input
                 type="text"
                 value={author}
-                onChange={(e) => setAuthor(e.target.value)}
+                onChange={(e) => setAuthor(e.target.value.slice(0, 100))}
                 placeholder="Your name"
+                maxLength={100}
                 className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-900 font-sans"
               />
             </div>
@@ -238,12 +248,16 @@ export default function AdminEditor({ postId, postdata }: { postId?: string; pos
                 Image URL (optional)
               </label>
               <input
-                type="text"
+                type="url"
                 value={image}
                 onChange={(e) => setImage(e.target.value)}
                 placeholder="https://example.com/image.jpg"
+                pattern="https?://.+"
                 className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-900 font-sans"
               />
+              {image && !image.match(/^https?:\/\/.+/) && (
+                <p className="mt-1 text-sm text-red-600">Please enter a valid URL starting with http:// or https://</p>
+              )}
             </div>
 
             {/* Content Editor */}
