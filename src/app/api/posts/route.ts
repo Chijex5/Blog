@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth-options';
 import { savePost, getPost, getAllPosts } from '@/lib/database';
+import { slugify } from '@/lib/slug';
 
 export async function POST(request: NextRequest) {
   try {
@@ -24,11 +25,20 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const slug = slugify(body.title);
+    if (!slug) {
+      return NextResponse.json(
+        { error: 'Invalid title for slug generation' },
+        { status: 400 }
+      );
+    }
+
     // Save to database (UUID will be generated server-side if id is not provided)
     const post = await savePost({
       id: body.id, // Will be undefined for new posts, causing server to generate UUID
       title: body.title,
       excerpt: body.excerpt || '',
+      slug: slug,
       content: body.content,
       author: body.author || 'Anonymous',
       tags: body.tags || [],
