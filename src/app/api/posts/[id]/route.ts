@@ -34,7 +34,7 @@ export async function DELETE(
       );
     }
 
-    // Check if user is the creator or an admin (all users are admins in this system)
+    // Check if user is the creator or an admin
     if (post.created_by !== session.user.id && session.user.role !== 'admin') {
       return NextResponse.json(
         { error: 'Forbidden: You can only delete your own posts' },

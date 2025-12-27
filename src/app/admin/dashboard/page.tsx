@@ -26,6 +26,7 @@ export default function AdminDashboard() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterOwn, setFilterOwn] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
+  const [deleteError, setDeleteError] = useState<string>('');
   const [showAddAdmin, setShowAddAdmin] = useState(false);
   
   // Add admin form state
@@ -85,6 +86,7 @@ export default function AdminDashboard() {
 
   const handleDelete = async (postId: string) => {
     try {
+      setDeleteError('');
       const response = await fetch(`/api/posts/${postId}`, {
         method: 'DELETE',
       });
@@ -94,11 +96,13 @@ export default function AdminDashboard() {
         setDeleteConfirm(null);
       } else {
         const error = await response.json();
-        alert(error.error || 'Failed to delete post');
+        setDeleteError(error.error || 'Failed to delete post');
+        setTimeout(() => setDeleteError(''), 5000);
       }
     } catch (error) {
       console.error('Error deleting post:', error);
-      alert('Failed to delete post');
+      setDeleteError('Failed to delete post. Please try again.');
+      setTimeout(() => setDeleteError(''), 5000);
     }
   };
 
@@ -381,6 +385,13 @@ export default function AdminDashboard() {
                 </button>
               </div>
             </form>
+          </div>
+        )}
+
+        {/* Delete Error Message */}
+        {deleteError && (
+          <div className="bg-red-50 text-red-800 px-4 py-3 rounded-xl text-sm mb-6 border border-red-200">
+            {deleteError}
           </div>
         )}
 

@@ -126,6 +126,8 @@ export async function savePost(post: Omit<BlogPost, 'created_at' | 'updated_at'>
       
       if (updateResult.rows.length > 0) {
         return updateResult.rows[0];
+      } else {
+        console.warn(`Update failed: Post with id ${post.id} not found`);
       }
     }
     

@@ -11,6 +11,9 @@ A modern personal blog built with Next.js, TypeScript, and Tailwind CSS.
 - 📱 **Responsive** - Works on all devices
 - ⚡ **Static Site Generation** - Fast loading times
 - 📖 **Markdown Support** - Write blog posts in markdown
+- 🔐 **Admin Dashboard** - Full-featured admin panel for managing posts and users
+- 👥 **User Management** - Create and manage admin users
+- ✏️ **Rich Text Editor** - TipTap-powered editor for creating beautiful posts
 
 ## Getting Started
 
@@ -45,6 +48,30 @@ npm run dev
 - `npm run build` - Build the application for production
 - `npm run start` - Start the production server
 - `npm run lint` - Run ESLint to check code quality
+- `npm run db:seed-admin` - Create a new admin user (requires database setup)
+
+## Admin Dashboard
+
+The blog includes a full-featured admin dashboard for managing posts and users. See [ADMIN_DASHBOARD.md](ADMIN_DASHBOARD.md) for detailed documentation.
+
+### Quick Start
+
+1. Set up your PostgreSQL database (see [AUTHENTICATION_SETUP.md](AUTHENTICATION_SETUP.md))
+2. Create your first admin user:
+   ```bash
+   npm run db:seed-admin
+   ```
+3. Log in at [http://localhost:3000/admin/login](http://localhost:3000/admin/login)
+4. Access the dashboard at [http://localhost:3000/admin/dashboard](http://localhost:3000/admin/dashboard)
+
+### Features
+
+- **View all posts** - See all blog posts in one place
+- **Create/Edit posts** - Rich text editor for beautiful content
+- **Delete posts** - Remove posts you created
+- **Filter & Search** - Find posts quickly
+- **Add admins** - Create new admin users
+- **Secure** - Role-based access control
 
 ## Project Structure
 
