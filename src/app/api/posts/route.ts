@@ -53,8 +53,10 @@ export async function POST(request: NextRequest) {
     });
 
     // Send email notifications to subscribers for new posts
-    // Only send if it's a new post and sendNotification is not explicitly set to false
-    if (isNewPost && body.sendNotification !== false) {
+    // Only send if it's a new post and sendNotification is explicitly true (default behavior)
+    const shouldSendNotification = isNewPost && (body.sendNotification === undefined || body.sendNotification === true);
+    
+    if (shouldSendNotification) {
       // Send notifications asynchronously (don't wait for completion)
       sendNewPostNotification(
         post.title,

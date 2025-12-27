@@ -1,5 +1,22 @@
 import { Resend } from 'resend';
 
+// Constants
+const BATCH_SIZE = parseInt(process.env.EMAIL_BATCH_SIZE || '50', 10);
+const BATCH_DELAY_MS = parseInt(process.env.EMAIL_BATCH_DELAY_MS || '1000', 10);
+
+// Validate required environment variables
+if (!process.env.RESEND_API_KEY) {
+  throw new Error('RESEND_API_KEY environment variable is required. Get your API key from https://resend.com/api-keys');
+}
+
+if (!process.env.FROM_EMAIL) {
+  console.warn('FROM_EMAIL environment variable is not set. Using default: onboarding@resend.dev');
+}
+
+if (!process.env.NEXT_PUBLIC_SITE_URL) {
+  console.warn('NEXT_PUBLIC_SITE_URL environment variable is not set. Using default: http://localhost:3000');
+}
+
 // Initialize Resend client
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -101,9 +118,8 @@ export async function sendNewPostNotification(
     let sentCount = 0;
 
     // Send emails in batches to avoid rate limits
-    const batchSize = 50;
-    for (let i = 0; i < subscribers.length; i += batchSize) {
-      const batch = subscribers.slice(i, i + batchSize);
+    for (let i = 0; i < subscribers.length; i += BATCH_SIZE) {
+      const batch = subscribers.slice(i, i + BATCH_SIZE);
       
       const emailPromises = batch.map(subscriber => {
         const unsubscribeUrl = `${SITE_URL}/unsubscribe?token=${subscriber.unsubscribe_token}`;
@@ -164,8 +180,8 @@ export async function sendNewPostNotification(
       sentCount += batch.length;
       
       // Add a small delay between batches
-      if (i + batchSize < subscribers.length) {
-        await new Promise(resolve => setTimeout(resolve, 1000));
+      if (i + BATCH_SIZE < subscribers.length) {
+        await new Promise(resolve => setTimeout(resolve, BATCH_DELAY_MS));
       }
     }
 

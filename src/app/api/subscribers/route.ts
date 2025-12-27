@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { addSubscriber, getSubscriberByEmail } from '@/lib/database';
+import { addSubscriber, getSubscriberByEmail, reactivateSubscriber } from '@/lib/database';
 import { sendSubscriptionConfirmationEmail } from '@/lib/email';
 import crypto from 'crypto';
 
@@ -35,12 +35,35 @@ export async function POST(request: NextRequest) {
         );
       } else {
         // Reactivate subscription
+        const reactivatedSubscriber = await reactivateSubscriber(email);
+        
+        if (!reactivatedSubscriber) {
+          return NextResponse.json(
+            { error: 'Failed to reactivate subscription' },
+            { status: 500 }
+          );
+        }
+
+        // Send confirmation email
+        const emailResult = await sendSubscriptionConfirmationEmail(
+          email,
+          existingSubscriber.unsubscribe_token
+        );
+
+        if (!emailResult.success) {
+          console.error('Failed to send confirmation email:', emailResult.error);
+        }
+
         return NextResponse.json(
-          { 
-            message: 'You were previously unsubscribed. Please use the subscribe form again to reactivate.',
-            error: 'Previously unsubscribed'
+          {
+            message: 'Welcome back! Your subscription has been reactivated. Check your email for confirmation.',
+            subscriber: {
+              id: reactivatedSubscriber.id,
+              email: reactivatedSubscriber.email,
+              subscribed_at: reactivatedSubscriber.subscribed_at,
+            },
           },
-          { status: 409 }
+          { status: 200 }
         );
       }
     }

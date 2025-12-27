@@ -1,11 +1,12 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 
 export default function UnsubscribePage() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const token = searchParams.get('token');
   
   const [loading, setLoading] = useState(false);
@@ -128,7 +129,7 @@ export default function UnsubscribePage() {
           )}
           
           <Button
-            onClick={() => window.location.href = '/'}
+            onClick={() => router.push('/')}
             variant="outline"
             className="w-full"
           >

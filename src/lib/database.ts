@@ -337,6 +337,26 @@ export async function unsubscribeByToken(token: string): Promise<boolean> {
 }
 
 /**
+ * Reactivate a subscriber by email
+ */
+export async function reactivateSubscriber(email: string): Promise<Subscriber | null> {
+  const client = await pool.connect();
+  try {
+    const result = await client.query(
+      'UPDATE subscribers SET is_active = true, subscribed_at = CURRENT_TIMESTAMP WHERE email = $1 RETURNING *',
+      [email.toLowerCase()]
+    );
+    
+    return result.rows[0] || null;
+  } catch (error) {
+    console.error('Error reactivating subscriber:', error);
+    throw error;
+  } finally {
+    client.release();
+  }
+}
+
+/**
  * Get all active subscribers
  */
 export async function getActiveSubscribers(): Promise<Subscriber[]> {
