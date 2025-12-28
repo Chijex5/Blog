@@ -41,6 +41,7 @@ export interface BlogPost {
   created_by?: string;
   updated_by?: string;
   updated_at: Date;
+  is_deleted?: boolean;
 }
 
 export interface Subscriber {
@@ -69,11 +70,13 @@ export async function initDatabase() {
         read_time VARCHAR(50) NOT NULL,
         date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        is_deleted BOOLEAN DEFAULT false
       );
       
       CREATE INDEX IF NOT EXISTS idx_blog_posts_date ON blog_posts(date DESC);
       CREATE INDEX IF NOT EXISTS idx_blog_posts_tags ON blog_posts USING GIN(tags);
+      CREATE INDEX IF NOT EXISTS idx_blog_posts_deleted ON blog_posts(is_deleted);
 
       CREATE TABLE IF NOT EXISTS subscribers (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -196,9 +199,29 @@ export async function savePost(post: Omit<BlogPost, 'created_at' | 'updated_at'>
 }
 
 /**
- * Get a single blog post by ID
+ * Get a single blog post by ID (excludes deleted posts for public view)
  */
 export async function getPost(id: string): Promise<BlogPost | null> {
+  const client = await pool.connect();
+  try {
+    const result = await client.query(
+      'SELECT * FROM blog_posts WHERE id = $1 AND is_deleted = false',
+      [id]
+    );
+    
+    return result.rows[0] || null;
+  } catch (error) {
+    console.error('Error getting post:', error);
+    throw error;
+  } finally {
+    client.release();
+  }
+}
+
+/**
+ * Get a single blog post by ID including deleted ones (for admin view)
+ */
+export async function getPostIncludingDeleted(id: string): Promise<BlogPost | null> {
   const client = await pool.connect();
   try {
     const result = await client.query(
@@ -216,13 +239,13 @@ export async function getPost(id: string): Promise<BlogPost | null> {
 }
 
 /**
- * Get all blog posts
+ * Get all blog posts (excludes deleted posts by default for public view)
  */
 export async function getAllPosts(): Promise<BlogPost[]> {
   const client = await pool.connect();
   try {
     const result = await client.query(
-      'SELECT * FROM blog_posts ORDER BY date DESC'
+      'SELECT * FROM blog_posts WHERE is_deleted = false ORDER BY date DESC'
     );
     
     return result.rows;
@@ -235,13 +258,32 @@ export async function getAllPosts(): Promise<BlogPost[]> {
 }
 
 /**
- * Delete a blog post
+ * Get all blog posts including deleted ones (for admin view)
+ */
+export async function getAllPostsIncludingDeleted(): Promise<BlogPost[]> {
+  const client = await pool.connect();
+  try {
+    const result = await client.query(
+      'SELECT * FROM blog_posts ORDER BY date DESC'
+    );
+    
+    return result.rows;
+  } catch (error) {
+    console.error('Error getting all posts:', error);
+    throw error;
+  } finally {
+    client.release();
+  }
+}
+
+/**
+ * Soft delete a blog post (marks as deleted instead of removing)
  */
 export async function deletePost(id: string): Promise<boolean> {
   const client = await pool.connect();
   try {
     const result = await client.query(
-      'DELETE FROM blog_posts WHERE id = $1',
+      'UPDATE blog_posts SET is_deleted = true, updated_at = CURRENT_TIMESTAMP WHERE id = $1',
       [id]
     );
     

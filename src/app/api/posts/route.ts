@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth-options';
-import { savePost, getPost, getAllPosts } from '@/lib/database';
+import { savePost, getPost, getPostIncludingDeleted, getAllPosts, getAllPostsIncludingDeleted } from '@/lib/database';
 import { slugify } from '@/lib/slug';
 import { sendNewPostNotification } from '@/lib/email';
 
@@ -86,12 +86,20 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
+    // Check if request is from an authenticated admin user
+    const session = await getServerSession(authOptions);
+    const isAdmin = session && session.user;
+    
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
 
     if (id) {
       // Get single post
-      const post = await getPost(id);
+      // Use admin function if authenticated, otherwise use public function
+      const post = isAdmin 
+        ? await getPostIncludingDeleted(id)
+        : await getPost(id);
+        
       if (!post) {
         return NextResponse.json(
           { error: 'Post not found' },
@@ -101,7 +109,11 @@ export async function GET(request: NextRequest) {
       return NextResponse.json(post);
     } else {
       // Get all posts
-      const posts = await getAllPosts();
+      // Use admin function if authenticated to show deleted posts in admin dashboard
+      const posts = isAdmin 
+        ? await getAllPostsIncludingDeleted()
+        : await getAllPosts();
+        
       return NextResponse.json(posts);
     }
   } catch (error) {

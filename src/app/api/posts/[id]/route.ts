@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth-options';
-import { deletePost, getPost } from '@/lib/database';
+import { deletePost, getPostIncludingDeleted } from '@/lib/database';
 
 interface RouteContext {
   params: Promise<{
@@ -25,8 +25,8 @@ export async function DELETE(
 
     const { id } = await context.params;
 
-    // Get the post to check ownership
-    const post = await getPost(id);
+    // Get the post to check ownership (include deleted posts for admin)
+    const post = await getPostIncludingDeleted(id);
     if (!post) {
       return NextResponse.json(
         { error: 'Post not found' },
