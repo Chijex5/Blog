@@ -81,29 +81,25 @@ export default function Footer() {
         )}
       </section>
       <div className="max-w-4xl mt-12 mx-auto px-6">
-        {/* Memoir Title */}
+        {/* Blog Title */}
         <h2 className="source-serif-italic text-2xl md:text-3xl text-black font-medium mb-8">
-          Memoir
+          Chijioke's Blog
         </h2>
         
         {/* First Row of Links */}
         <nav className="flex flex-wrap items-center justify-center gap-8 md:gap-12 mb-6 text-[#6b6b6b]">
           <a href="/" className="hover:text-black transition-colors">Home</a>
           <a href="/about" className="hover:text-black transition-colors">About</a>
-          <a href="/letters" className="hover:text-black transition-colors">Letters</a>
-          <a href="/404" className="hover:text-black transition-colors">404</a>
+          <a href="/blog" className="hover:text-black transition-colors">Blog</a>
+          <a href="https://uzodinma.tech" target="_blank" rel="noopener noreferrer" className="hover:text-black transition-colors">Portfolio</a>
         </nav>
         
-        {/* Second Row of Links */}
-        <nav className="flex flex-wrap items-center justify-center gap-8 md:gap-12 mb-8 text-[#6b6b6b]">
-          <a href="#" className="hover:text-black transition-colors">Made in Framer</a>
-          <a href="#" className="hover:text-black transition-colors">Buy Template</a>
-          <a href="#" className="hover:text-black transition-colors">More Templates</a>
-        </nav>
-        
-        {/* Copyright */}
-        <p className="text-[#999] text-sm">
-          © 2025 Memoir. Created by Hamza Ehsan.
+        {/* Copyright and Design Credit */}
+        <p className="text-[#999] text-sm mb-2">
+          © 2025 Chijioke Uzodinma
+        </p>
+        <p className="text-[#999] text-xs">
+          Design inspired by <a href="https://memoir.framer.website" target="_blank" rel="noopener noreferrer" className="hover:text-black transition-colors underline">Memoir</a>
         </p>
       </div>
       {showModal && <SubscribedModal onClose={() => setShowModal(false)} />}
