@@ -314,14 +314,14 @@ function PinnedSection() {
 
   if (isCollapsed) return (
     <SidebarGroup>
-      <SidebarMenuButton to={`/blog/${pinnedPost.id}`} icon={PinIcon}>Pinned</SidebarMenuButton>
+      <SidebarMenuButton to={`/post/${pinnedPost.slug}`} icon={PinIcon}>Pinned</SidebarMenuButton>
     </SidebarGroup>
   )
 
   return (
     <SidebarGroup>
         <button 
-          onClick={() => router.push(`/blog/${pinnedPost.id}`)}
+          onClick={() => router.push(`/post/${pinnedPost.slug}`)}
           className="group bg-white/50 rounded-md flex flex-col p-3 backdrop-blur-sm cursor-pointer hover:bg-white/70 transition-colors"
         >
             <p className="text-[10px] font-medium text-gray-500 uppercase px-2 py-1 mb-1">

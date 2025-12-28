@@ -243,6 +243,46 @@ export async function getPostIncludingDeleted(id: string): Promise<BlogPost | nu
 }
 
 /**
+ * Get a single blog post by slug (excludes deleted posts for public view)
+ */
+export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
+  const client = await pool.connect();
+  try {
+    const result = await client.query(
+      'SELECT * FROM blog_posts WHERE slug = $1 AND is_deleted = false',
+      [slug]
+    );
+    
+    return result.rows[0] || null;
+  } catch (error) {
+    console.error('Error getting post by slug:', error);
+    throw error;
+  } finally {
+    client.release();
+  }
+}
+
+/**
+ * Get a single blog post by slug including deleted ones (for admin view)
+ */
+export async function getPostBySlugIncludingDeleted(slug: string): Promise<BlogPost | null> {
+  const client = await pool.connect();
+  try {
+    const result = await client.query(
+      'SELECT * FROM blog_posts WHERE slug = $1',
+      [slug]
+    );
+    
+    return result.rows[0] || null;
+  } catch (error) {
+    console.error('Error getting post by slug:', error);
+    throw error;
+  } finally {
+    client.release();
+  }
+}
+
+/**
  * Get all blog posts (excludes deleted posts by default for public view)
  */
 export async function getAllPosts(): Promise<BlogPost[]> {

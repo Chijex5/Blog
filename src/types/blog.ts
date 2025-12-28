@@ -3,6 +3,7 @@ import { JSONContent } from '@tiptap/core';
 export interface BlogPost {
   id: string;
   title: string;
+  slug: string;
   image?: string;
   excerpt: string;
   content: JSONContent; // Tiptap JSON content

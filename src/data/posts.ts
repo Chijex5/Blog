@@ -1,10 +1,11 @@
 import { BlogPost } from "@/types/blog";
-import { getAllPosts, getPost } from '@/lib/database';
+import { getAllPosts, getPost, getPostBySlug } from '@/lib/database';
 
 // Fallback static posts (used if database is unavailable)
 export const blogPosts: BlogPost[] = [
   {
     id: '1',
+    slug: 'getting-started-with-nextjs-and-typescript',
     title: 'Getting Started with Next.js and TypeScript',
     excerpt: 'Learn how to build modern web applications with Next.js 16 and TypeScript. This guide covers the basics and best practices.',
     content: {
@@ -162,6 +163,7 @@ export const blogPosts: BlogPost[] = [
   },
   {
     id: '2',
+    slug: 'mastering-tailwind-css',
     title: 'Mastering Tailwind CSS',
     image: 'https://framerusercontent.com/images/PutCbUrDHloKzYlnrmDgTEqX2pU.png',
     excerpt: 'Discover the power of utility-first CSS with Tailwind. Learn how to build beautiful, responsive designs quickly and efficiently.',
@@ -311,6 +313,7 @@ export const blogPosts: BlogPost[] = [
   },
   {
     id: '3',
+    slug: 'building-a-personal-blog-my-journey',
     title: 'Building a Personal Blog: My Journey',
     image: 'https://framerusercontent.com/images/Ct1xSTSiaJsPf3n2aDyia8cZ390.png?scale-down-to=1024',
     excerpt: 'A reflection on creating this blog using modern web technologies. Learn about the decisions and challenges faced along the way.',
@@ -644,6 +647,7 @@ export async function getBlogPosts(): Promise<BlogPost[]> {
       // Convert database posts to BlogPost format
       return dbPosts.map(post => ({
         id: post.id,
+        slug: post.slug,
         title: post.title,
         excerpt: post.excerpt,
         content: parseContent(post.content),
@@ -673,6 +677,7 @@ export async function getBlogPost(id: string): Promise<BlogPost | undefined> {
       // Convert database post to BlogPost format
       return {
         id: dbPost.id,
+        slug: dbPost.slug,
         title: dbPost.title,
         excerpt: dbPost.excerpt,
         content: parseContent(dbPost.content),
@@ -689,4 +694,34 @@ export async function getBlogPost(id: string): Promise<BlogPost | undefined> {
   
   // Fallback to static post
   return blogPosts.find(post => post.id === id);
+}
+
+/**
+ * Get a single blog post by slug from database, with fallback to static posts
+ */
+export async function getBlogPostBySlug(slug: string): Promise<BlogPost | undefined> {
+  try {
+    const dbPost = await getPostBySlug(slug);
+    
+    if (dbPost) {
+      // Convert database post to BlogPost format
+      return {
+        id: dbPost.id,
+        slug: dbPost.slug,
+        title: dbPost.title,
+        excerpt: dbPost.excerpt,
+        content: parseContent(dbPost.content),
+        date: typeof dbPost.date === 'string' ? dbPost.date : (dbPost.date as Date).toISOString(),
+        author: dbPost.author,
+        image: dbPost.image,
+        tags: dbPost.tags,
+        readTime: dbPost.read_time,
+      };
+    }
+  } catch (error) {
+    console.error(`Error fetching post with slug ${slug} from database, using fallback:`, error);
+  }
+  
+  // Fallback to static post
+  return blogPosts.find(post => post.slug === slug);
 }
