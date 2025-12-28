@@ -16,7 +16,6 @@ export default function AdminMobileNav() {
     { 
       icon: LogOut, 
       label: 'Logout', 
-      href: '#', 
       isExternal: false,
       onClick: () => signOut({ callbackUrl: '/admin/login' })
     }
@@ -31,7 +30,7 @@ export default function AdminMobileNav() {
 
   return (
     <nav 
-      className="fixed md:hidden bottom-0 left-0 right-0 bg-[var(--color-warm-accent)] border-t border-gray-200 z-50"
+      className="fixed sm:hidden bottom-0 left-0 right-0 bg-[var(--color-warm-accent)] border-t border-gray-200 z-50"
       style={{ 
         paddingBottom: 'env(safe-area-inset-bottom)',
       }}
@@ -39,7 +38,7 @@ export default function AdminMobileNav() {
       <div className="grid grid-cols-6 gap-1 px-2 py-3">
         {navItems.map((item, index) => {
           const Icon = item.icon;
-          const isActive = pathname === item.href;
+          const isActive = item.href ? pathname === item.href : false;
 
           if (item.onClick) {
             return (
@@ -57,6 +56,11 @@ export default function AdminMobileNav() {
                 </button>
               </div>
             );
+          }
+
+          // Only render Link if item has href
+          if (!item.href) {
+            return null;
           }
 
           return (

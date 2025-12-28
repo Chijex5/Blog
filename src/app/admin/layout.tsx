@@ -134,7 +134,7 @@ export default function AdminLayout({
     <SidebarProvider>
       <AdminSidebar />
       <SidebarWrapper>
-        <div className="flex-1 w-full bg-[var(--color-warm-bg)] min-h-screen transition-all duration-300 pb-20 md:pb-0">
+        <div className="flex-1 w-full bg-[var(--color-warm-bg)] min-h-screen transition-all duration-300 pb-20 sm:pb-0">
           {children}
         </div>
       </SidebarWrapper>
