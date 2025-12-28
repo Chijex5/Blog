@@ -174,7 +174,7 @@ This is a personal blog project. Feel free to use it as inspiration for your own
 
 ## Author
 
-Your Name - Personal Blog
+Chijioke - Personal Blog
 
 ---
 
