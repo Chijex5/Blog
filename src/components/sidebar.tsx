@@ -133,7 +133,7 @@ export function SidebarFooter({ children }: { children: React.ReactNode }) {
 // Sidebar Group
 export function SidebarGroup({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
-    <div className={`px-2 py-2 mb-1 ${className}`}>
+    <div className={`px-2 py-2 ${className}`}>
       {children}
     </div>
   )
