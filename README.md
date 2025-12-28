@@ -40,7 +40,11 @@ npm install
 Create a `.env.local` file in the root directory with the following:
 ```bash
 # Database
-DATABASE_URL=your_postgresql_connection_string
+DATABASE_USER=your_database_user
+DATABASE_PASSWORD=your_database_password
+DATABASE_HOST=your_database_host
+DATABASE_PORT=5432
+DATABASE_NAME=your_database_name
 
 # NextAuth
 NEXTAUTH_SECRET=your_nextauth_secret
@@ -117,9 +121,11 @@ The blog includes a complete email service powered by Resend. See [EMAIL_SERVICE
 ```
 ├── src/
 │   ├── app/                    # Next.js App Router pages
-│   │   ├── (main)/            # Main site routes
+│   │   ├── about/             # Public about page
 │   │   ├── admin/             # Admin dashboard pages
 │   │   ├── api/               # API routes
+│   │   ├── blog/              # Blog post routes
+│   │   ├── unsubscribe/       # Unsubscribe routes
 │   │   ├── layout.tsx         # Root layout
 │   │   └── globals.css        # Global styles
 │   ├── components/            # React components
