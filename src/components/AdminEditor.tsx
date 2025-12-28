@@ -92,7 +92,7 @@ export default function AdminEditor({ postId, postdata }: { postId?: string; pos
       
       setSaveMessage('Post saved successfully!');
       setTimeout(() => {
-        router.push(`/blog/${savedPost.id}`);
+        router.push(`/post/${savedPost.slug}`);
       }, 1000);
     } catch (error) {
       console.error('Error saving post:', error);

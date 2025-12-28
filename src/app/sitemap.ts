@@ -5,7 +5,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const posts = await getBlogPosts();
   
   const blogPosts: MetadataRoute.Sitemap = posts.map((post) => ({
-    url: `https://chijioke.app/blog/${post.id}`,
+    url: `https://chijioke.app/post/${post.slug}`,
     lastModified: new Date(post.date),
     changeFrequency: 'weekly',
     priority: 0.8,

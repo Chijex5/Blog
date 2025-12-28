@@ -70,6 +70,7 @@ npm run dev
 - `npm run start` - Start the production server
 - `npm run lint` - Run ESLint to check code quality
 - `npm run db:seed-admin` - Create a new admin user (requires database setup)
+- `npm run db:migrate-slug` - Add slug column and generate slugs for existing posts
 
 ## Admin Dashboard
 
@@ -124,7 +125,7 @@ The blog includes a complete email service powered by Resend. See [EMAIL_SERVICE
 │   │   ├── about/             # Public about page
 │   │   ├── admin/             # Admin dashboard pages
 │   │   ├── api/               # API routes
-│   │   ├── blog/              # Blog post routes
+│   │   ├── post/              # Blog post routes (post/[slug])
 │   │   ├── unsubscribe/       # Unsubscribe routes
 │   │   ├── layout.tsx         # Root layout
 │   │   └── globals.css        # Global styles
@@ -138,6 +139,13 @@ The blog includes a complete email service powered by Resend. See [EMAIL_SERVICE
 ├── public/                    # Static assets
 └── ...                        # Config files
 ```
+
+## Blog Post URLs
+
+Blog posts are accessible via SEO-friendly slug URLs:
+- Format: `/post/[slug]` (e.g., `/post/getting-started-with-nextjs`)
+- Slugs are automatically generated from post titles
+- Each slug is unique and indexed in the database for fast lookups
 
 ## Adding New Blog Posts
 

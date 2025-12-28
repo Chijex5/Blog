@@ -66,6 +66,7 @@ export async function initDatabase() {
         excerpt TEXT NOT NULL,
         content TEXT NOT NULL,
         author VARCHAR(255) NOT NULL,
+        slug VARCHAR(500) NOT NULL,
         tags TEXT[] DEFAULT '{}',
         image VARCHAR(1000),
         read_time VARCHAR(50) NOT NULL,
@@ -81,6 +82,7 @@ export async function initDatabase() {
       CREATE INDEX IF NOT EXISTS idx_blog_posts_deleted ON blog_posts(is_deleted);
       CREATE INDEX IF NOT EXISTS idx_blog_posts_id_deleted ON blog_posts(id, is_deleted);
       CREATE INDEX IF NOT EXISTS idx_blog_posts_pinned ON blog_posts(is_pinned) WHERE is_pinned = true;
+      CREATE UNIQUE INDEX IF NOT EXISTS idx_blog_posts_slug ON blog_posts(slug);
 
       CREATE TABLE IF NOT EXISTS subscribers (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -106,11 +108,18 @@ export async function initDatabase() {
 
 export async function slugExists(slug: string): Promise<boolean> {
   const client = await pool.connect();
-  const result = await client.query<{ exists: boolean }>(
-    'SELECT EXISTS(SELECT 1 FROM posts WHERE slug = $1) as exists',
-    [slug]
-  );
-  return result.rows[0]?.exists || false;
+  try {
+    const result = await client.query<{ exists: boolean }>(
+      'SELECT EXISTS(SELECT 1 FROM blog_posts WHERE slug = $1) as exists',
+      [slug]
+    );
+    return result.rows[0]?.exists || false;
+  } catch (error) {
+    console.error('Error checking slug existence:', error);
+    throw error;
+  } finally {
+    client.release();
+  }
 }
 
 /**
@@ -236,6 +245,46 @@ export async function getPostIncludingDeleted(id: string): Promise<BlogPost | nu
     return result.rows[0] || null;
   } catch (error) {
     console.error('Error getting post:', error);
+    throw error;
+  } finally {
+    client.release();
+  }
+}
+
+/**
+ * Get a single blog post by slug (excludes deleted posts for public view)
+ */
+export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
+  const client = await pool.connect();
+  try {
+    const result = await client.query(
+      'SELECT * FROM blog_posts WHERE slug = $1 AND is_deleted = false',
+      [slug]
+    );
+    
+    return result.rows[0] || null;
+  } catch (error) {
+    console.error('Error getting post by slug:', error);
+    throw error;
+  } finally {
+    client.release();
+  }
+}
+
+/**
+ * Get a single blog post by slug including deleted ones (for admin view)
+ */
+export async function getPostBySlugIncludingDeleted(slug: string): Promise<BlogPost | null> {
+  const client = await pool.connect();
+  try {
+    const result = await client.query(
+      'SELECT * FROM blog_posts WHERE slug = $1',
+      [slug]
+    );
+    
+    return result.rows[0] || null;
+  } catch (error) {
+    console.error('Error getting post by slug:', error);
     throw error;
   } finally {
     client.release();

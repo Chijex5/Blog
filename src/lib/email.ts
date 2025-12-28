@@ -140,7 +140,7 @@ export async function sendNewPostNotification(
       return { success: true, sent: 0 };
     }
 
-    const postUrl = `${SITE_URL}/blog/${postSlug}`;
+    const postUrl = `${SITE_URL}/post/${postSlug}`;
     let sentCount = 0;
 
     // Send emails in batches to avoid rate limits

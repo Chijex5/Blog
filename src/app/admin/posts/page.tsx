@@ -274,7 +274,7 @@ export default function AllPostsPage() {
                         )}
                         <div className="min-w-0 flex-1">
                           <Link 
-                            href={`/blog/${post.id}`}
+                            href={`/post/${post.slug}`}
                             className={`font-medium hover:text-blue-600 line-clamp-1 ${post.is_deleted ? 'text-gray-400 line-through' : 'text-gray-900'}`}
                           >
                             {post.title}
@@ -333,7 +333,7 @@ export default function AllPostsPage() {
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <div className="flex items-center justify-end gap-2">
                         <Link
-                          href={`/blog/${post.id}`}
+                          href={`/post/${post.slug}`}
                           className="text-gray-400 hover:text-blue-600 transition-colors p-2 rounded-lg hover:bg-gray-100"
                           title="View post"
                         >

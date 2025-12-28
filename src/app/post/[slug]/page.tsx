@@ -1,4 +1,4 @@
-import { getBlogPost, getBlogPosts } from '@/data/posts';
+import { getBlogPostBySlug, getBlogPosts } from '@/data/posts';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Clock, Tag } from 'lucide-react';
@@ -9,7 +9,7 @@ import type { Metadata } from 'next';
 
 interface PageProps {
   params: Promise<{
-    id: string;
+    slug: string;
   }>;
 }
 
@@ -17,14 +17,14 @@ interface PageProps {
 export async function generateStaticParams() {
   const posts = await getBlogPosts();
   return posts.map((post) => ({
-    id: post.id,
+    slug: post.slug,
   }));
 }
 
 // Generate metadata for SEO
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const { id } = await params;
-  const post = await getBlogPost(id);
+  const { slug } = await params;
+  const post = await getBlogPostBySlug(slug);
 
   if (!post) {
     return {
@@ -52,12 +52,16 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 
   const description = getTextFromContent(post.content);
+  const canonicalUrl = `https://chijioke.app/post/${post.slug}`;
 
   return {
     title: `${post.title} | My Personal Blog`,
     description: description,
     keywords: post.tags.join(', '),
     authors: [{ name: post.author }],
+    alternates: {
+      canonical: canonicalUrl,
+    },
     openGraph: {
       title: post.title,
       description: description,
@@ -65,6 +69,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       publishedTime: post.date,
       authors: [post.author],
       tags: post.tags,
+      url: canonicalUrl,
       images: post.image ? [
         {
           url: post.image,
@@ -82,8 +87,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function BlogPost({ params }: PageProps) {
-  const { id } = await params;
-  const post = await getBlogPost(id);
+  const { slug } = await params;
+  const post = await getBlogPostBySlug(slug);
 
   if (!post) {
     notFound();
@@ -107,6 +112,10 @@ export default async function BlogPost({ params }: PageProps) {
       name: post.author,
     },
     keywords: post.tags.join(', '),
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': `https://chijioke.app/post/${post.slug}`,
+    },
   };
 
   return (
