@@ -83,7 +83,7 @@ export default function Footer() {
       <div className="max-w-4xl mt-12 mx-auto px-6">
         {/* Blog Title */}
         <h2 className="source-serif-italic text-2xl md:text-3xl text-black font-medium mb-8">
-          Chijioke&apos;s Blog
+          Chijioke's Blog
         </h2>
         
         {/* First Row of Links */}
