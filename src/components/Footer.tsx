@@ -99,7 +99,7 @@ export default function Footer() {
           © 2025 Chijioke Uzodinma
         </p>
         <p className="text-[#999] text-xs">
-          Design inspired by <a href="http://memoir.framer.website" target="_blank" rel="noopener noreferrer" className="hover:text-black transition-colors underline">Memoir</a>
+          Design inspired by <a href="https://memoir.framer.website" target="_blank" rel="noopener noreferrer" className="hover:text-black transition-colors underline">Memoir</a>
         </p>
       </div>
       {showModal && <SubscribedModal onClose={() => setShowModal(false)} />}

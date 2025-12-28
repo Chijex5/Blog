@@ -192,4 +192,4 @@ Chijioke Uzodinma - [uzodinma.tech](https://uzodinma.tech)
 ---
 
 Built with ❤️ using Next.js, TypeScript, and Tailwind CSS  
-Design inspired by [Memoir](http://memoir.framer.website)
+Design inspired by [Memoir](https://memoir.framer.website)
