@@ -35,8 +35,8 @@ export async function sendSubscriptionConfirmationEmail(
     const unsubscribeUrl = `${SITE_URL}/unsubscribe?token=${unsubscribeToken}`;
 
     await resend.emails.send({
-      from: FROM_EMAIL,
-      to: email,
+      from: `"Chijioke’s Blog" <${FROM_EMAIL}>`,
+      to: [email],
       subject: `Welcome to ${BRAND_NAME}`,
       html: `
         <!DOCTYPE html>
@@ -151,8 +151,8 @@ export async function sendNewPostNotification(
         const unsubscribeUrl = `${SITE_URL}/unsubscribe?token=${subscriber.unsubscribe_token}`;
         
         return resend.emails.send({
-          from: FROM_EMAIL,
-          to: subscriber.email,
+          from: `"Chijioke’s Blog" <${FROM_EMAIL}>`,
+      to: [subscriber.email],
           subject: `New from ${BRAND_NAME}: ${postTitle}`,
           html: `
             <!DOCTYPE html>
@@ -267,8 +267,8 @@ export async function sendAdminCreationEmail(
     const loginUrl = `${SITE_URL}/admin/login`;
 
     await resend.emails.send({
-      from: FROM_EMAIL,
-      to: email,
+      from: `"Chijioke’s Blog" <${FROM_EMAIL}>`,
+      to: [email],
       subject: `Admin Access Granted — ${BRAND_NAME}`,
       html: `
         <!DOCTYPE html>
@@ -411,8 +411,8 @@ export async function sendUnsubscribeConfirmationEmail(
 ): Promise<{ success: boolean; error?: string }> {
   try {
     await resend.emails.send({
-      from: FROM_EMAIL,
-      to: email,
+      from: `"Chijioke’s Blog" <${FROM_EMAIL}>`,
+      to: [email],
       subject: `Unsubscribed from ${BRAND_NAME}`,
       html: `
         <!DOCTYPE html>
