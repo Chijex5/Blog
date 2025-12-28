@@ -8,15 +8,14 @@ import { signOut } from 'next-auth/react';
 
 export default function AdminMobileNav() {
   const navItems = [
-    { icon: LayoutDashboard, label: 'Dashboard', href: '/admin/dashboard', isExternal: false },
-    { icon: FileText, label: 'Posts', href: '/admin/posts', isExternal: false },
-    { icon: PlusCircle, label: 'New', href: '/admin/create/new', isExternal: false },
-    { icon: Users, label: 'Admins', href: '/admin/admins', isExternal: false },
-    { icon: Home, label: 'Site', href: '/', isExternal: false },
+    { icon: LayoutDashboard, label: 'Dashboard', href: '/admin/dashboard' },
+    { icon: FileText, label: 'Posts', href: '/admin/posts' },
+    { icon: PlusCircle, label: 'New', href: '/admin/create/new' },
+    { icon: Users, label: 'Admins', href: '/admin/admins' },
+    { icon: Home, label: 'Site', href: '/' },
     { 
       icon: LogOut, 
-      label: 'Logout', 
-      isExternal: false,
+      label: 'Logout',
       onClick: () => signOut({ callbackUrl: '/admin/login' })
     }
   ];
