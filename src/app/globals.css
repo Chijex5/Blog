@@ -241,6 +241,36 @@
   padding-left: 1em;
 }
 
+:root {
+  --toast-bg: var(--color-warm-bg);
+  --toast-border: var(--color-warm-accent);
+  --toast-text: #000;
+}
+
+[data-sonner-toast] {
+  background: var(--toast-bg);
+  border: 1px solid var(--toast-border);
+  color: var(--toast-text);
+  font-family: inherit;
+}
+
+[data-sonner-toast][data-type="success"] {
+  border-color: var(--color-warm-accent);
+}
+
+[data-sonner-toast][data-type="error"] {
+  border-color: #dc2626;
+}
+
+[data-sonner-toast] [data-title] {
+  font-weight: 600;
+}
+
+[data-sonner-toast] [data-description] {
+  opacity: 0.85;
+}
+
+
 .prose :where(blockquote p:first-of-type):not(:where([class~="not-prose"] *))::before {
   content: open-quote;
 }

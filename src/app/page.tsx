@@ -7,6 +7,7 @@ import BadgeComponent from "./BadgeComponent"
 import Footer from "@/components/Footer"
 import { RiSearchLine } from "react-icons/ri";
 import type { Metadata } from 'next';
+import Newsletter from "./newsLetter"
 
 const categories = ["All", "Audience", "Writing", "Business", "Mindset"]
 
@@ -46,14 +47,7 @@ export default async function Home() {
         </h1>
 
         {/* NEWSLETTER */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 max-w-md mx-auto">
-          <Input
-            placeholder="Your email"
-            className="h-11 bg-white shadow-none border-none rounded-xl"
-          />
-          <Button className="h-11 px-6 rounded-xl">Subscribe</Button>
-        </div>
-
+        <Newsletter />
         <p className="text-xs text-muted-foreground mt-3">
           No spam, unsubscribe anytime.
         </p>

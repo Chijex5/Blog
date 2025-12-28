@@ -6,6 +6,7 @@ import Footer from "@/components/Footer";
 import { Lora, Source_Serif_4, Manrope } from 'next/font/google'
 import MobileNav from "@/components/mobile-nav";
 import AuthProvider from "@/components/AuthProvider";
+import { Toaster}  from "sonner"
 
 export const sourceSerif = Source_Serif_4({
   subsets: ['latin'],
@@ -35,6 +36,7 @@ export default function RootLayout({
       <body className="antialiased font-sans">
         <AuthProvider>
           <SidebarProvider>
+            <Toaster position="top-center"  />
             <SidebarApp />
             <SidebarWrapper>
               <div className="flex-1 w-full bg-[var(--color-warm-bg)] transition-all duration-300">{children}</div>
