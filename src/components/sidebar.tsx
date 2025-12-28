@@ -1,18 +1,14 @@
 "use client"
 
-import React, { createContext, useContext, useState } from "react"
-import Image from "next/image"
+import React, { createContext, useContext, useState, useEffect } from "react"
 import {
   Home,
   User,
   Mail,
-  Instagram,
   GithubIcon,
   FileText,
   PinIcon,
   ChevronLeft,
-  ChevronRight,
-  LucideArrowUpRightSquare,
   ArrowUpRightIcon,
 } from "lucide-react"
 import { Input } from "./ui/input"
@@ -170,7 +166,7 @@ export function SidebarMenuButton({
   isActive?: boolean
   to: string
   isExternal?: boolean
-  icon: any
+  icon: React.ComponentType<{ className?: string }>
   badge?: string | number
   showArrow?: boolean
 }) {
@@ -284,7 +280,11 @@ function ProfileSection() {
 // Pinned Section Component
 function PinnedSection() {
   const { isCollapsed } = useSidebar()
-  const [pinnedPost, setPinnedPost] = useState<any>(null)
+  const [pinnedPost, setPinnedPost] = useState<{
+    id: string;
+    title: string;
+    image?: string;
+  } | null>(null)
   const [loading, setLoading] = useState(true)
   const router = useRouter()
 
