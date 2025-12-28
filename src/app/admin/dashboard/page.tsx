@@ -9,6 +9,7 @@ import {
   Plus, 
   FileText,
   Calendar,
+  User,
   Tag,
   Search,
   UserPlus,
