@@ -75,10 +75,10 @@ export function SidebarToggle() {
   return (
     <button
         onClick={toggleSidebar}
-        className="absolute -right-4 top-12 z-50 rounded-full bg-black shadow-md text-white flex items-center justify-center transition-all duration-300 ease-in-out"
+        className={`absolute top-15 z-50 rounded-full bg-black shadow-md text-white flex items-center justify-center transition-all duration-300 ease-in-out ${isCollapsed ? '-right-3' : '-right-4'}`}
         style={{
-            width: isCollapsed ? '28px' : '32px',
-            height: isCollapsed ? '28px' : '32px',
+            width: isCollapsed ? '18px' : '24px',
+            height: isCollapsed ? '18px' : '24px',
         }}
         >
         <div
@@ -213,6 +213,9 @@ export function SidebarMenuButton({
 // Demo App Component
 export default function SidebarApp() {
     const pathname = usePathname();
+    if (pathname.startsWith('/admin')) {
+      return null;
+    }
   return (
       <Sidebar>
         <SidebarToggle />
@@ -284,6 +287,7 @@ function PinnedSection() {
     id: string;
     title: string;
     image?: string;
+    slug: string;
   } | null>(null)
   const [loading, setLoading] = useState(true)
   const router = useRouter()
