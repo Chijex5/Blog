@@ -4,24 +4,24 @@ A modern personal blog built with Next.js, TypeScript, and Tailwind CSS.
 
 ## Features
 
-- 🚀 **Next.js 16** - Latest version with App Router
+- 🚀 **Next.js 16** - Modern React framework with App Router
 - 📝 **TypeScript** - Type-safe code
 - 🎨 **Tailwind CSS** - Beautiful, responsive designs
-- 🌙 **Dark Mode** - Automatic dark mode support
 - 📱 **Responsive** - Works on all devices
-- ⚡ **Static Site Generation** - Fast loading times
-- 📖 **Markdown Support** - Write blog posts in markdown
 - 🔐 **Admin Dashboard** - Full-featured admin panel for managing posts and users
 - 👥 **User Management** - Create and manage admin users
 - ✏️ **Rich Text Editor** - TipTap-powered editor for creating beautiful posts
 - 📧 **Email Service** - Integrated Resend for subscriptions and notifications
+- 🔒 **Authentication** - Secure NextAuth.js integration
+- 🗄️ **PostgreSQL Database** - Robust data management
 
 ## Getting Started
 
 ### Prerequisites
 
-- Node.js 18+ installed
+- Node.js 20+ installed
 - npm or yarn package manager
+- PostgreSQL database
 
 ### Installation
 
@@ -36,12 +36,28 @@ cd Blog
 npm install
 ```
 
-3. Run the development server:
+3. Set up your environment variables:
+Create a `.env.local` file in the root directory with the following:
+```bash
+# Database
+DATABASE_URL=your_postgresql_connection_string
+
+# NextAuth
+NEXTAUTH_SECRET=your_nextauth_secret
+NEXTAUTH_URL=http://localhost:3000
+
+# Email Service (Resend)
+RESEND_API_KEY=your_resend_api_key
+FROM_EMAIL=onboarding@resend.dev
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
+```
+
+4. Run the development server:
 ```bash
 npm run dev
 ```
 
-4. Open [http://localhost:3000](http://localhost:3000) in your browser.
+5. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## Available Scripts
 
@@ -99,50 +115,43 @@ The blog includes a complete email service powered by Resend. See [EMAIL_SERVICE
 ## Project Structure
 
 ```
-├── app/                    # Next.js App Router pages
-│   ├── blog/[id]/         # Dynamic blog post pages
-│   ├── about/             # About page
-│   ├── layout.tsx         # Root layout
-│   ├── page.tsx           # Home page
-│   └── globals.css        # Global styles
-├── components/            # React components
-│   ├── Header.tsx         # Navigation header
-│   ├── Footer.tsx         # Page footer
-│   └── BlogCard.tsx       # Blog post card
-├── data/                  # Blog data
-│   └── posts.ts           # Blog posts content
-├── types/                 # TypeScript types
-│   └── blog.ts            # Blog post types
-└── public/                # Static assets
+├── src/
+│   ├── app/                    # Next.js App Router pages
+│   │   ├── (main)/            # Main site routes
+│   │   ├── admin/             # Admin dashboard pages
+│   │   ├── api/               # API routes
+│   │   ├── layout.tsx         # Root layout
+│   │   └── globals.css        # Global styles
+│   ├── components/            # React components
+│   │   ├── ui/                # UI components
+│   │   ├── Header.tsx         # Navigation header
+│   │   ├── Footer.tsx         # Page footer
+│   │   └── ...                # Other components
+│   └── lib/                   # Utility functions and configs
+├── scripts/                   # Database and utility scripts
+├── public/                    # Static assets
+└── ...                        # Config files
 ```
 
 ## Adding New Blog Posts
 
-To add a new blog post, edit the `data/posts.ts` file and add a new post object:
+Use the admin dashboard to create and manage blog posts:
 
-```typescript
-{
-  id: '4',
-  title: 'Your Post Title',
-  excerpt: 'A brief description of your post',
-  content: `
-# Your Post Title
+1. Log in to the admin dashboard at `/admin/login`
+2. Navigate to `/admin/dashboard`
+3. Click "Create New Post"
+4. Use the rich text editor to write your content
+5. Add tags, categories, and other metadata
+6. Publish your post
 
-Your markdown content here...
-  `,
-  date: '2024-12-25',
-  author: 'Your Name',
-  tags: ['Tag1', 'Tag2'],
-  readTime: '5 min read'
-}
-```
+Posts are stored in the PostgreSQL database and can be managed entirely through the admin interface.
 
 ## Customization
 
-- **Site Title**: Update in `app/layout.tsx` metadata
-- **Header/Footer**: Modify `components/Header.tsx` and `components/Footer.tsx`
-- **Colors**: Customize in `app/globals.css` and Tailwind classes
-- **About Page**: Edit `app/about/page.tsx`
+- **Site Title**: Update in `src/app/layout.tsx` metadata
+- **Header/Footer**: Modify `src/components/Header.tsx` and `src/components/Footer.tsx`
+- **Colors**: Customize in `src/app/globals.css` and Tailwind classes
+- **About Page**: Edit content through the admin dashboard or directly in the route files
 
 ## Deployment
 
@@ -162,11 +171,15 @@ You can also deploy to:
 
 ## Technologies Used
 
-- [Next.js](https://nextjs.org/) - React framework
+- [Next.js 16](https://nextjs.org/) - React framework
 - [TypeScript](https://www.typescriptlang.org/) - Type safety
 - [Tailwind CSS](https://tailwindcss.com/) - Styling
-- [React Markdown](https://github.com/remarkjs/react-markdown) - Markdown rendering
+- [NextAuth.js](https://next-auth.js.org/) - Authentication
+- [PostgreSQL](https://www.postgresql.org/) - Database
+- [TipTap](https://tiptap.dev/) - Rich text editor
+- [Resend](https://resend.com/) - Email service
 - [@tailwindcss/typography](https://tailwindcss.com/docs/typography-plugin) - Typography styles
+- [Framer Motion](https://www.framer.com/motion/) - Animations
 
 ## License
 
@@ -174,8 +187,9 @@ This is a personal blog project. Feel free to use it as inspiration for your own
 
 ## Author
 
-Chijioke - Personal Blog
+Chijioke Uzodinma - [uzodinma.tech](https://uzodinma.tech)
 
 ---
 
-Built with ❤️ using Next.js, TypeScript, and Tailwind CSS
+Built with ❤️ using Next.js, TypeScript, and Tailwind CSS  
+Design inspired by [Memoir](http://memoir.framer.website)
