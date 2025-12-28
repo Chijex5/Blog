@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "db:seed-admin": "node scripts/seed-admin.js",
-    "db:migrate": "node scripts/migrate-add-is-deleted.js"
+    "db:migrate": "node scripts/migrate-add-is-deleted.js",
+    "db:migrate-pinned": "node scripts/migrate-add-is-pinned.js"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.15",

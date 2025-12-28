@@ -15,4 +15,5 @@ export interface BlogPost {
   created_at?: Date;
   updated_at?: Date;
   is_deleted?: boolean;
+  is_pinned?: boolean;
 }
