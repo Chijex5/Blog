@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth-options';
 import { savePost, getPost, getAllPosts } from '@/lib/database';
 import { slugify } from '@/lib/slug';
+import { sendNewPostNotification } from '@/lib/email';
 
 export async function POST(request: NextRequest) {
   try {
@@ -33,6 +34,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const isNewPost = !body.id;
+
     // Save to database (UUID will be generated server-side if id is not provided)
     const post = await savePost({
       id: body.id, // Will be undefined for new posts, causing server to generate UUID
@@ -48,6 +51,28 @@ export async function POST(request: NextRequest) {
       created_by: session.user.id, // Track who created/updated
       updated_by: session.user.id,
     });
+
+    // Send email notifications to subscribers for new posts
+    // Only send if it's a new post and sendNotification is explicitly true (default behavior)
+    const shouldSendNotification = isNewPost && (body.sendNotification === undefined || body.sendNotification === true);
+    
+    if (shouldSendNotification) {
+      // Send notifications asynchronously (don't wait for completion)
+      sendNewPostNotification(
+        post.title,
+        post.excerpt,
+        post.slug,
+        post.image
+      ).then(result => {
+        if (result.success) {
+          console.log(`Successfully sent notifications to ${result.sent} subscribers`);
+        } else {
+          console.error('Failed to send post notifications:', result.error);
+        }
+      }).catch(error => {
+        console.error('Error sending post notifications:', error);
+      });
+    }
 
     return NextResponse.json(post, { status: 200 });
   } catch (error) {

@@ -14,6 +14,7 @@ A modern personal blog built with Next.js, TypeScript, and Tailwind CSS.
 - 🔐 **Admin Dashboard** - Full-featured admin panel for managing posts and users
 - 👥 **User Management** - Create and manage admin users
 - ✏️ **Rich Text Editor** - TipTap-powered editor for creating beautiful posts
+- 📧 **Email Service** - Integrated Resend for subscriptions and notifications
 
 ## Getting Started
 
@@ -72,6 +73,28 @@ The blog includes a full-featured admin dashboard for managing posts and users. 
 - **Filter & Search** - Find posts quickly
 - **Add admins** - Create new admin users
 - **Secure** - Role-based access control
+
+## Email Service
+
+The blog includes a complete email service powered by Resend. See [EMAIL_SERVICE.md](EMAIL_SERVICE.md) for detailed documentation.
+
+### Features
+
+- **Subscription Management** - Users can subscribe to receive post notifications
+- **New Post Alerts** - Automatic emails to subscribers when you publish
+- **Admin Onboarding** - Welcome emails with credentials for new admins
+- **Easy Unsubscribe** - One-click unsubscribe with confirmation
+
+### Quick Setup
+
+1. Sign up at [Resend](https://resend.com/) and get your API key
+2. Add environment variables to `.env.local`:
+   ```bash
+   RESEND_API_KEY=your_api_key_here
+   FROM_EMAIL=onboarding@resend.dev
+   NEXT_PUBLIC_SITE_URL=http://localhost:3000
+   ```
+3. The subscription form is already integrated in the footer!
 
 ## Project Structure
 

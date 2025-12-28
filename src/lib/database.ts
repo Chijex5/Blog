@@ -43,6 +43,14 @@ export interface BlogPost {
   updated_at: Date;
 }
 
+export interface Subscriber {
+  id: string;
+  email: string;
+  subscribed_at: Date;
+  unsubscribe_token: string;
+  is_active: boolean;
+}
+
 /**
  * Initialize database tables
  */
@@ -66,6 +74,18 @@ export async function initDatabase() {
       
       CREATE INDEX IF NOT EXISTS idx_blog_posts_date ON blog_posts(date DESC);
       CREATE INDEX IF NOT EXISTS idx_blog_posts_tags ON blog_posts USING GIN(tags);
+
+      CREATE TABLE IF NOT EXISTS subscribers (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        email VARCHAR(255) UNIQUE NOT NULL,
+        subscribed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        unsubscribe_token VARCHAR(255) UNIQUE NOT NULL,
+        is_active BOOLEAN DEFAULT true
+      );
+
+      CREATE INDEX IF NOT EXISTS idx_subscribers_email ON subscribers(email);
+      CREATE INDEX IF NOT EXISTS idx_subscribers_token ON subscribers(unsubscribe_token);
+      CREATE INDEX IF NOT EXISTS idx_subscribers_active ON subscribers(is_active);
     `);
     
     console.log('Database initialized successfully');
@@ -228,6 +248,127 @@ export async function deletePost(id: string): Promise<boolean> {
     return result.rowCount !== null && result.rowCount > 0;
   } catch (error) {
     console.error('Error deleting post:', error);
+    throw error;
+  } finally {
+    client.release();
+  }
+}
+
+/**
+ * Add a new subscriber
+ */
+export async function addSubscriber(email: string, unsubscribeToken: string): Promise<Subscriber> {
+  const client = await pool.connect();
+  try {
+    const result = await client.query(
+      `INSERT INTO subscribers (email, unsubscribe_token)
+       VALUES ($1, $2)
+       RETURNING *`,
+      [email.toLowerCase(), unsubscribeToken]
+    );
+    
+    return result.rows[0];
+  } catch (error) {
+    console.error('Error adding subscriber:', error);
+    throw error;
+  } finally {
+    client.release();
+  }
+}
+
+/**
+ * Get subscriber by email
+ */
+export async function getSubscriberByEmail(email: string): Promise<Subscriber | null> {
+  const client = await pool.connect();
+  try {
+    const result = await client.query(
+      'SELECT * FROM subscribers WHERE email = $1',
+      [email.toLowerCase()]
+    );
+    
+    return result.rows[0] || null;
+  } catch (error) {
+    console.error('Error getting subscriber:', error);
+    throw error;
+  } finally {
+    client.release();
+  }
+}
+
+/**
+ * Get subscriber by unsubscribe token
+ */
+export async function getSubscriberByToken(token: string): Promise<Subscriber | null> {
+  const client = await pool.connect();
+  try {
+    const result = await client.query(
+      'SELECT * FROM subscribers WHERE unsubscribe_token = $1',
+      [token]
+    );
+    
+    return result.rows[0] || null;
+  } catch (error) {
+    console.error('Error getting subscriber by token:', error);
+    throw error;
+  } finally {
+    client.release();
+  }
+}
+
+/**
+ * Unsubscribe a subscriber by token
+ */
+export async function unsubscribeByToken(token: string): Promise<boolean> {
+  const client = await pool.connect();
+  try {
+    const result = await client.query(
+      'UPDATE subscribers SET is_active = false WHERE unsubscribe_token = $1',
+      [token]
+    );
+    
+    return result.rowCount !== null && result.rowCount > 0;
+  } catch (error) {
+    console.error('Error unsubscribing:', error);
+    throw error;
+  } finally {
+    client.release();
+  }
+}
+
+/**
+ * Reactivate a subscriber by email
+ */
+export async function reactivateSubscriber(email: string): Promise<Subscriber | null> {
+  const client = await pool.connect();
+  try {
+    const result = await client.query(
+      'UPDATE subscribers SET is_active = true, subscribed_at = CURRENT_TIMESTAMP WHERE email = $1 RETURNING *',
+      [email.toLowerCase()]
+    );
+    
+    return result.rows[0] || null;
+  } catch (error) {
+    console.error('Error reactivating subscriber:', error);
+    throw error;
+  } finally {
+    client.release();
+  }
+}
+
+/**
+ * Get all active subscribers
+ */
+export async function getActiveSubscribers(): Promise<Subscriber[]> {
+  const client = await pool.connect();
+  try {
+    const result = await client.query(
+      'SELECT * FROM subscribers WHERE is_active = true ORDER BY subscribed_at DESC'
+    );
+    
+    return result.rows;
+  } catch (error) {
+    console.error('Error getting active subscribers:', error);
     throw error;
   } finally {
     client.release();

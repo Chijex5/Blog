@@ -18,6 +18,7 @@ import {
 import { Input } from "./ui/input"
 import { useRouter, usePathname } from "next/navigation"
 import { BsTwitterX } from "react-icons/bs";
+import SubscribedModal from "./subscribed-modal"
 
 // Sidebar Context
 const SidebarContext = createContext<{
@@ -317,17 +318,54 @@ function PinnedSection() {
 
 // Newsletter Form Component
 function NewsletterForm() {
+  const [email, setEmail] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
+
+  const handleSubscribe = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setMessage(null);
+
+    try {
+      const response = await fetch('/api/subscribers', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setShowModal(true);
+        setEmail('');
+      } else {
+        setMessage({ type: 'error', text: data.error || 'Failed to subscribe' });
+      }
+    } catch {
+      setMessage({ type: 'error', text: 'Something went wrong. Please try again.' });
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <div>
       <p className="font-medium mb-2 text-sm">Stay in the loop</p>
       <Input
         type="email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        disabled={loading}
         placeholder="Your email"
         className="w-full bg-white shadow-none border-none rounded-lg px-3 py-2 text-sm mb-3"
       />
-      <button className="w-full rounded-md bg-black py-2 text-white text-sm hover:bg-gray-800 transition-colors">
-        Subscribe
+      <button disabled={loading} onClick={handleSubscribe} className="w-full rounded-md bg-black py-2 text-white text-sm hover:bg-gray-800 transition-colors">
+        {loading ? 'Subscribing...' : 'Subscribe'}
       </button>
+      {showModal && <SubscribedModal onClose={() => setShowModal(false)} />}
     </div>
   )
 }
