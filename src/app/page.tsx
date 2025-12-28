@@ -10,6 +10,8 @@ import type { Metadata } from 'next';
 
 const categories = ["All", "Audience", "Writing", "Business", "Mindset"]
 
+export const revalidate = 60;
+
 // SEO metadata for home page
 export const metadata: Metadata = {
   title: "My Personal Blog | Ideas and Insights for Modern Creators",
