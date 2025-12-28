@@ -468,8 +468,8 @@ export async function pinPost(id: string): Promise<boolean> {
     // Start a transaction
     await client.query('BEGIN');
     
-    // Unpin all posts
-    await client.query('UPDATE blog_posts SET is_pinned = false WHERE is_pinned = true');
+    // Unpin all posts only if there are any pinned posts
+    await client.query('UPDATE blog_posts SET is_pinned = false WHERE is_pinned = true AND id != $1', [id]);
     
     // Pin the specified post
     const result = await client.query(
