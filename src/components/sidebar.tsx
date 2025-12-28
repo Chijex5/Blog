@@ -284,34 +284,70 @@ function ProfileSection() {
 // Pinned Section Component
 function PinnedSection() {
   const { isCollapsed } = useSidebar()
+  const [pinnedPost, setPinnedPost] = useState<any>(null)
+  const [loading, setLoading] = useState(true)
+  const router = useRouter()
+
+  useEffect(() => {
+    fetchPinnedPost()
+  }, [])
+
+  const fetchPinnedPost = async () => {
+    try {
+      const response = await fetch('/api/posts/pinned')
+      if (response.ok) {
+        const data = await response.json()
+        setPinnedPost(data)
+      }
+    } catch (error) {
+      console.error('Error fetching pinned post:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // Don't show anything while loading
+  if (loading) return null
+
+  // Show nothing if no pinned post
+  if (!pinnedPost) return null
 
   if (isCollapsed) return (
     <SidebarGroup>
-      <SidebarMenuButton to="/post/1" icon={PinIcon}>Pinned</SidebarMenuButton>
+      <SidebarMenuButton to={`/blog/${pinnedPost.id}`} icon={PinIcon}>Pinned</SidebarMenuButton>
     </SidebarGroup>
   )
 
   return (
     <SidebarGroup>
-        <div className="group bg-white/50 rounded-md flex flex-col p-3 backdrop-blur-sm">
+        <button 
+          onClick={() => router.push(`/blog/${pinnedPost.id}`)}
+          className="group bg-white/50 rounded-md flex flex-col p-3 backdrop-blur-sm cursor-pointer hover:bg-white/70 transition-colors"
+        >
             <p className="text-[10px] font-medium text-gray-500 uppercase px-2 py-1 mb-1">
                 Pinned
             </p>
 
-            <img src="https://framerusercontent.com/images/9yiL4fu5UwNTh7C8QpYzPwL8Wo.png" className="w-full h-32 rounded-sm" alt="" />
+            {pinnedPost.image && (
+              <img 
+                src={pinnedPost.image} 
+                className="w-full h-32 rounded-sm object-cover" 
+                alt={pinnedPost.title} 
+              />
+            )}
 
             <div className="flex items-center justify-between gap-2 mt-2">
-                <p className="text-[10px] font-medium  text-gray-800 max-w-[60%] leading-snug">
-                The Only Writing Tools I Actually Use
+                <p className="text-[10px] font-medium text-gray-800 max-w-[60%] leading-snug line-clamp-2 text-left">
+                  {pinnedPost.title}
                 </p>
 
                 <div className="bg-white rounded-sm p-1 w-6 h-6 flex items-center justify-center shrink-0">
-                <ArrowUpRightIcon
-                    className="w-3.5 h-3.5 text-black transition-transform duration-200 ease-out group-hover:rotate-45"
-                />
+                  <ArrowUpRightIcon
+                      className="w-3.5 h-3.5 text-black transition-transform duration-200 ease-out group-hover:rotate-45"
+                  />
                 </div>
             </div>
-         </div>
+         </button>
     </SidebarGroup>
   )
 }

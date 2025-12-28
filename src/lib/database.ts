@@ -42,6 +42,7 @@ export interface BlogPost {
   updated_by?: string;
   updated_at: Date;
   is_deleted?: boolean;
+  is_pinned?: boolean;
 }
 
 export interface Subscriber {
@@ -71,13 +72,15 @@ export async function initDatabase() {
         date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        is_deleted BOOLEAN DEFAULT false
+        is_deleted BOOLEAN DEFAULT false,
+        is_pinned BOOLEAN DEFAULT false
       );
       
       CREATE INDEX IF NOT EXISTS idx_blog_posts_date ON blog_posts(date DESC);
       CREATE INDEX IF NOT EXISTS idx_blog_posts_tags ON blog_posts USING GIN(tags);
       CREATE INDEX IF NOT EXISTS idx_blog_posts_deleted ON blog_posts(is_deleted);
       CREATE INDEX IF NOT EXISTS idx_blog_posts_id_deleted ON blog_posts(id, is_deleted);
+      CREATE INDEX IF NOT EXISTS idx_blog_posts_pinned ON blog_posts(is_pinned) WHERE is_pinned = true;
 
       CREATE TABLE IF NOT EXISTS subscribers (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -412,6 +415,96 @@ export async function getActiveSubscribers(): Promise<Subscriber[]> {
     return result.rows;
   } catch (error) {
     console.error('Error getting active subscribers:', error);
+    throw error;
+  } finally {
+    client.release();
+  }
+}
+
+/**
+ * Get all subscribers (active and inactive)
+ */
+export async function getAllSubscribers(): Promise<Subscriber[]> {
+  const client = await pool.connect();
+  try {
+    const result = await client.query(
+      'SELECT * FROM subscribers ORDER BY subscribed_at DESC'
+    );
+    
+    return result.rows;
+  } catch (error) {
+    console.error('Error getting all subscribers:', error);
+    throw error;
+  } finally {
+    client.release();
+  }
+}
+
+/**
+ * Get the pinned post (if any)
+ */
+export async function getPinnedPost(): Promise<BlogPost | null> {
+  const client = await pool.connect();
+  try {
+    const result = await client.query(
+      'SELECT * FROM blog_posts WHERE is_pinned = true AND is_deleted = false LIMIT 1'
+    );
+    
+    return result.rows[0] || null;
+  } catch (error) {
+    console.error('Error getting pinned post:', error);
+    throw error;
+  } finally {
+    client.release();
+  }
+}
+
+/**
+ * Pin a post (unpins any other pinned post)
+ */
+export async function pinPost(id: string): Promise<boolean> {
+  const client = await pool.connect();
+  try {
+    // Start a transaction
+    await client.query('BEGIN');
+    
+    // Unpin all posts
+    await client.query('UPDATE blog_posts SET is_pinned = false WHERE is_pinned = true');
+    
+    // Pin the specified post
+    const result = await client.query(
+      'UPDATE blog_posts SET is_pinned = true, updated_at = CURRENT_TIMESTAMP WHERE id = $1 AND is_deleted = false',
+      [id]
+    );
+    
+    // Commit transaction
+    await client.query('COMMIT');
+    
+    return result.rowCount !== null && result.rowCount > 0;
+  } catch (error) {
+    // Rollback on error
+    await client.query('ROLLBACK');
+    console.error('Error pinning post:', error);
+    throw error;
+  } finally {
+    client.release();
+  }
+}
+
+/**
+ * Unpin a post
+ */
+export async function unpinPost(id: string): Promise<boolean> {
+  const client = await pool.connect();
+  try {
+    const result = await client.query(
+      'UPDATE blog_posts SET is_pinned = false, updated_at = CURRENT_TIMESTAMP WHERE id = $1',
+      [id]
+    );
+    
+    return result.rowCount !== null && result.rowCount > 0;
+  } catch (error) {
+    console.error('Error unpinning post:', error);
     throw error;
   } finally {
     client.release();

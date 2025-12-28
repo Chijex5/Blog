@@ -10,7 +10,8 @@ import {
   Calendar,
   Tag,
   Search,
-  Eye
+  Eye,
+  Pin
 } from 'lucide-react';
 import { BlogPost } from '@/types/blog';
 
@@ -23,6 +24,7 @@ export default function AllPostsPage() {
   const [filterOwn, setFilterOwn] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
   const [deleteError, setDeleteError] = useState<string>('');
+  const [pinningPost, setPinningPost] = useState<string | null>(null);
 
   // Fetch posts
   useEffect(() => {
@@ -87,6 +89,51 @@ export default function AllPostsPage() {
       console.error('Error deleting post:', error);
       setDeleteError('Failed to delete post. Please try again.');
       setTimeout(() => setDeleteError(''), 5000);
+    }
+  };
+
+  const handleTogglePin = async (postId: string, currentlyPinned: boolean) => {
+    try {
+      setPinningPost(postId);
+      
+      if (currentlyPinned) {
+        // Unpin the post
+        const response = await fetch(`/api/posts/${postId}/pin`, {
+          method: 'DELETE',
+        });
+
+        if (response.ok) {
+          setPosts(posts.map(post => 
+            post.id === postId ? { ...post, is_pinned: false } : post
+          ));
+        } else {
+          const error = await response.json();
+          setDeleteError(error.error || 'Failed to unpin post');
+          setTimeout(() => setDeleteError(''), 5000);
+        }
+      } else {
+        // Pin the post (this will unpin others)
+        const response = await fetch(`/api/posts/${postId}/pin`, {
+          method: 'POST',
+        });
+
+        if (response.ok) {
+          setPosts(posts.map(post => ({
+            ...post,
+            is_pinned: post.id === postId
+          })));
+        } else {
+          const error = await response.json();
+          setDeleteError(error.error || 'Failed to pin post');
+          setTimeout(() => setDeleteError(''), 5000);
+        }
+      }
+    } catch (error) {
+      console.error('Error toggling pin:', error);
+      setDeleteError('Failed to toggle pin. Please try again.');
+      setTimeout(() => setDeleteError(''), 5000);
+    } finally {
+      setPinningPost(null);
     }
   };
 
@@ -246,6 +293,12 @@ export default function AllPostsPage() {
                                 Deleted
                               </span>
                             )}
+                            {post.is_pinned && (
+                              <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-yellow-100 text-yellow-800">
+                                <Pin className="w-3 h-3 mr-1" />
+                                Pinned
+                              </span>
+                            )}
                           </div>
                         </div>
                       </div>
@@ -286,6 +339,22 @@ export default function AllPostsPage() {
                         >
                           <Eye className="w-4 h-4" />
                         </Link>
+                        
+                        {/* Pin button - only for non-deleted posts */}
+                        {!post.is_deleted && (
+                          <button
+                            onClick={() => handleTogglePin(post.id, post.is_pinned || false)}
+                            disabled={pinningPost === post.id}
+                            className={`transition-colors p-2 rounded-lg hover:bg-gray-100 ${
+                              post.is_pinned 
+                                ? 'text-yellow-600 hover:text-yellow-700' 
+                                : 'text-gray-400 hover:text-yellow-600'
+                            } ${pinningPost === post.id ? 'opacity-50 cursor-not-allowed' : ''}`}
+                            title={post.is_pinned ? 'Unpin post' : 'Pin post'}
+                          >
+                            <Pin className={`w-4 h-4 ${post.is_pinned ? 'fill-current' : ''}`} />
+                          </button>
+                        )}
                         
                         {isOwnPost(post) && (
                           <>
