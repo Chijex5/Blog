@@ -23,7 +23,7 @@ export default function AdminEditor({ postId, postdata }: { postId?: string; pos
   const { data: session } = useSession();
   const [title, setTitle] = useState('');
   const [excerpt, setExcerpt] = useState('');
-  const [author, setAuthor] = useState('');
+  const [author, setAuthor] = useState(session?.user?.name || '');
   const [tags, setTags] = useState('');
   const [image, setImage] = useState('');
   const [content, setContent] = useState('');
