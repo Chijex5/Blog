@@ -228,18 +228,25 @@ export default function AllPostsPage() {
                         <div className="min-w-0 flex-1">
                           <Link 
                             href={`/blog/${post.id}`}
-                            className="font-medium text-gray-900 hover:text-blue-600 line-clamp-1"
+                            className={`font-medium hover:text-blue-600 line-clamp-1 ${post.is_deleted ? 'text-gray-400 line-through' : 'text-gray-900'}`}
                           >
                             {post.title}
                           </Link>
                           <p className="text-sm text-gray-500 line-clamp-2 mt-1">
                             {post.excerpt}
                           </p>
-                          {isOwnPost(post) && (
-                            <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800 mt-2">
-                              Your Post
-                            </span>
-                          )}
+                          <div className="flex gap-2 mt-2">
+                            {isOwnPost(post) && (
+                              <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">
+                                Your Post
+                              </span>
+                            )}
+                            {post.is_deleted && (
+                              <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-100 text-red-800">
+                                Deleted
+                              </span>
+                            )}
+                          </div>
                         </div>
                       </div>
                     </td>
