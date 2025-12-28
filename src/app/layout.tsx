@@ -22,7 +22,7 @@ export const manrope = Manrope({
 })
 
 export const metadata: Metadata = {
-  title: "My Personal Blog",
+  title: "Chijioke's Blog",
   description: "A modern personal blog built with Next.js, TypeScript, and Tailwind CSS",
 };
 
