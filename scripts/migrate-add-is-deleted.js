@@ -46,12 +46,16 @@ async function migrate() {
       
       console.log('✓ Added is_deleted column to blog_posts table');
       
-      // Create index for better query performance
+      // Create indexes for better query performance
       await client.query(`
         CREATE INDEX IF NOT EXISTS idx_blog_posts_deleted ON blog_posts(is_deleted);
       `);
       
-      console.log('✓ Created index on is_deleted column');
+      await client.query(`
+        CREATE INDEX IF NOT EXISTS idx_blog_posts_id_deleted ON blog_posts(id, is_deleted);
+      `);
+      
+      console.log('✓ Created indexes on is_deleted column');
     }
     
     console.log('Migration completed successfully!');

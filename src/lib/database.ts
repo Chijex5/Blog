@@ -77,6 +77,7 @@ export async function initDatabase() {
       CREATE INDEX IF NOT EXISTS idx_blog_posts_date ON blog_posts(date DESC);
       CREATE INDEX IF NOT EXISTS idx_blog_posts_tags ON blog_posts USING GIN(tags);
       CREATE INDEX IF NOT EXISTS idx_blog_posts_deleted ON blog_posts(is_deleted);
+      CREATE INDEX IF NOT EXISTS idx_blog_posts_id_deleted ON blog_posts(id, is_deleted);
 
       CREATE TABLE IF NOT EXISTS subscribers (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
