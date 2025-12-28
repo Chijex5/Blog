@@ -3,10 +3,11 @@
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { useState } from "react";
-
+import SubscribedModal from "./subscribed-modal";
 export default function Footer() {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
 
   const handleSubscribe = async (e: React.FormEvent) => {
@@ -26,7 +27,7 @@ export default function Footer() {
       const data = await response.json();
 
       if (response.ok) {
-        setMessage({ type: 'success', text: data.message });
+        setShowModal(true);
         setEmail('');
       } else {
         setMessage({ type: 'error', text: data.error || 'Failed to subscribe' });
@@ -105,6 +106,7 @@ export default function Footer() {
           © 2025 Memoir. Created by Hamza Ehsan.
         </p>
       </div>
+      {showModal && <SubscribedModal onClose={() => setShowModal(false)} />}
     </footer>
   );
 }

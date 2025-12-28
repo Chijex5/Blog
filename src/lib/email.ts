@@ -20,7 +20,7 @@ if (!process.env.NEXT_PUBLIC_SITE_URL) {
 // Initialize Resend client
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-const FROM_EMAIL = process.env.FROM_EMAIL || 'onboarding@resend.dev';
+const FROM_EMAIL = process.env.FROM_EMAIL || 'onboarding@chijioke.app';
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
 
 /**
