@@ -22,8 +22,8 @@ export const manrope = Manrope({
 })
 
 export const metadata: Metadata = {
-  title: "Chijioke's Blog",
-  description: "A modern personal blog built with Next.js, TypeScript, and Tailwind CSS",
+  title: "Chijioke's Blog | Learning Tech as a Student",
+  description: "Honest insights about learning programming as a student. Real talk about confusion, impostor syndrome, and staying in the game long enough to grow.",
 };
 
 export default function RootLayout({

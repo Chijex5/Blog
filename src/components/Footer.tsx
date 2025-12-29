@@ -43,11 +43,11 @@ export default function Footer() {
     <footer className="w-full py-6 text-center text-sm mt-6 text-black">
       <section className="bg-white/50 flex flex-col items-center justif-y-center px-4 py-12">
         <span className="inline-block mb-6 rounded-full bg-[var(--color-warm-accent)] text-black font-bold px-4 py-1 text-xs">
-          My mission is to
+          The mission
         </span>
         <h1 className="text-4xl md:text-6xl font-sans font-weight-500 tracking-tight mb-10">
-          Help you create and <br />
-          <span className="text-4xl md:text-6xl font-normal"> earn on <em className="source-serif-italic">your</em> terms.</span>
+          Stay in the game <br />
+          <span className="text-4xl md:text-6xl font-normal"> long enough to <em className="source-serif-italic">actually</em> grow.</span>
         </h1>
         <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row items-center justify-center gap-3 max-w-md mx-auto">
           <Input

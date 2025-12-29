@@ -15,18 +15,18 @@ export const revalidate = 60;
 
 // SEO metadata for home page
 export const metadata: Metadata = {
-  title: "My Personal Blog | Ideas and Insights for Modern Creators",
-  description: "A modern personal blog featuring articles on web development, TypeScript, Next.js, Tailwind CSS, and more. Ideas and insights for the modern creator.",
-  keywords: ["blog", "web development", "Next.js", "TypeScript", "Tailwind CSS", "React", "programming"],
+  title: "Learning Tech as a Student | Real Talk About Programming and Growth",
+  description: "Honest insights about learning programming, dealing with confusion, impostor syndrome, and staying in the game long enough to grow. For beginners who feel lost after the initial excitement.",
+  keywords: ["learning programming", "coding for beginners", "impostor syndrome", "tutorial hell", "student developer", "learning tech", "programming journey", "beginner coding"],
   openGraph: {
-    title: "My Personal Blog | Ideas and Insights for Modern Creators",
-    description: "A modern personal blog featuring articles on web development, TypeScript, Next.js, Tailwind CSS, and more.",
+    title: "Learning Tech as a Student | Real Talk About Programming and Growth",
+    description: "Honest insights about learning programming, dealing with confusion, impostor syndrome, and staying in the game long enough to grow.",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "My Personal Blog | Ideas and Insights for Modern Creators",
-    description: "A modern personal blog featuring articles on web development, TypeScript, Next.js, Tailwind CSS, and more.",
+    title: "Learning Tech as a Student | Real Talk About Programming and Growth",
+    description: "Honest insights about learning programming, dealing with confusion, impostor syndrome, and staying in the game long enough to grow.",
   },
 };
 
@@ -42,8 +42,8 @@ export default async function Home() {
         </span>
 
         <h1 className="text-4xl md:text-6xl font-sans font-weight-500 tracking-tight mb-10">
-          Ideas and insights for <br />
-          <span className="text-4xl md:text-6xl font-normal"> the <em className="source-serif-italic">modern</em> creator.</span>
+          The real experience of <br />
+          <span className="text-4xl md:text-6xl font-normal"> learning <em className="source-serif-italic">tech</em> as a student.</span>
         </h1>
 
         {/* NEWSLETTER */}
