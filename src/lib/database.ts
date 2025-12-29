@@ -605,6 +605,25 @@ export async function getAllLetters(): Promise<Letter[]> {
 }
 
 /**
+ * Get all letters including deleted ones (for admin view)
+ */
+export async function getAllLettersIncludingDeleted(): Promise<Letter[]> {
+  const client = await pool.connect();
+  try {
+    const result = await client.query(
+      'SELECT * FROM letters ORDER BY letter_number DESC'
+    );
+    
+    return result.rows;
+  } catch (error) {
+    console.error('Error getting all letters:', error);
+    throw error;
+  } finally {
+    client.release();
+  }
+}
+
+/**
  * Get a single letter by slug (excludes deleted letters for public view)
  */
 export async function getLetterBySlug(slug: string): Promise<Letter | null> {
@@ -618,6 +637,150 @@ export async function getLetterBySlug(slug: string): Promise<Letter | null> {
     return result.rows[0] || null;
   } catch (error) {
     console.error('Error getting letter by slug:', error);
+    throw error;
+  } finally {
+    client.release();
+  }
+}
+
+/**
+ * Get a single letter by ID including deleted ones (for admin view)
+ */
+export async function getLetterIncludingDeleted(id: string): Promise<Letter | null> {
+  const client = await pool.connect();
+  try {
+    const result = await client.query(
+      'SELECT * FROM letters WHERE id = $1',
+      [id]
+    );
+    
+    return result.rows[0] || null;
+  } catch (error) {
+    console.error('Error getting letter:', error);
+    throw error;
+  } finally {
+    client.release();
+  }
+}
+
+/**
+ * Save or update a letter
+ */
+export async function saveLetter(letter: Omit<Letter, 'created_at' | 'updated_at' | 'views' | 'shares'>): Promise<Letter> {
+  const client = await pool.connect();
+  try {
+    // If id is provided, try to update first
+    if (letter.id) {
+      const updateResult = await client.query(
+        `UPDATE letters SET
+          letter_number = $1,
+          title = $2,
+          subtitle = $3,
+          recipient = $4,
+          content = $5,
+          excerpt = $6,
+          author = $7,
+          slug = $8,
+          tags = $9,
+          image = $10,
+          read_time = $11,
+          published_date = $12,
+          series = $13,
+          updated_at = CURRENT_TIMESTAMP,
+          updated_by = $14
+        WHERE id = $15
+        RETURNING *;`,
+        [
+          letter.letter_number,
+          letter.title,
+          letter.subtitle,
+          letter.recipient,
+          letter.content,
+          letter.excerpt,
+          letter.author,
+          letter.slug,
+          letter.tags,
+          letter.image,
+          letter.read_time,
+          letter.published_date,
+          letter.series,
+          letter.updated_by,
+          letter.id
+        ]
+      );
+      
+      if (updateResult.rows.length > 0) {
+        return updateResult.rows[0];
+      }
+    }
+    
+    // If no id provided or update didn't find a row, insert new letter
+    const result = await client.query(
+      `INSERT INTO letters (
+        letter_number,
+        title,
+        subtitle,
+        recipient,
+        content,
+        excerpt,
+        author,
+        slug,
+        tags,
+        image,
+        read_time,
+        published_date,
+        series,
+        created_by,
+        updated_by
+      )
+      VALUES (
+        $1, $2, $3, $4, $5,
+        $6, $7, $8, $9, $10,
+        $11, $12, $13, $14, $15
+      )
+      RETURNING *;`,
+      [
+        letter.letter_number,
+        letter.title,
+        letter.subtitle,
+        letter.recipient,
+        letter.content,
+        letter.excerpt,
+        letter.author,
+        letter.slug,
+        letter.tags,
+        letter.image,
+        letter.read_time,
+        letter.published_date,
+        letter.series,
+        letter.created_by,
+        letter.updated_by
+      ]
+    );
+    
+    return result.rows[0];
+  } catch (error) {
+    console.error('Error saving letter:', error);
+    throw error;
+  } finally {
+    client.release();
+  }
+}
+
+/**
+ * Soft delete a letter (marks as deleted instead of removing)
+ */
+export async function deleteLetter(id: string): Promise<boolean> {
+  const client = await pool.connect();
+  try {
+    const result = await client.query(
+      'UPDATE letters SET is_deleted = true, updated_at = CURRENT_TIMESTAMP WHERE id = $1',
+      [id]
+    );
+    
+    return result.rowCount !== null && result.rowCount > 0;
+  } catch (error) {
+    console.error('Error deleting letter:', error);
     throw error;
   } finally {
     client.release();
