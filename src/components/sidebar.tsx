@@ -15,6 +15,7 @@ import { Input } from "./ui/input"
 import { useRouter, usePathname } from "next/navigation"
 import { BsTwitterX } from "react-icons/bs";
 import SubscribedModal from "./subscribed-modal"
+import FeaturedLetter from "./FeaturedLetter"
 
 // Sidebar Context
 const SidebarContext = createContext<{
@@ -254,6 +255,11 @@ export default function SidebarApp() {
 
           {/* Pinned Section */}
           <PinnedSection />
+
+          {/* Featured Letter */}
+          <SidebarGroup>
+            <FeaturedLetter isCollapsed={isCollapsed} />
+          </SidebarGroup>
         </SidebarContent>
 
         <SidebarFooter>

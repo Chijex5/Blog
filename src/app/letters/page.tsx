@@ -1,29 +1,72 @@
-import { getLetters } from "@/data/letters";
+'use client';
+
+import { useState, useEffect } from "react";
 import LetterCard from "@/components/LetterCard";
 import Footer from "@/components/Footer";
-import type { Metadata } from 'next';
+import { Letter } from "@/lib/database";
+import { Search } from "lucide-react";
 
-export const revalidate = 60;
+export default function LettersPage() {
+  const [letters, setLetters] = useState<Letter[]>([]);
+  const [filteredLetters, setFilteredLetters] = useState<Letter[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [selectedSeries, setSelectedSeries] = useState<string>('all');
+  const [searchTerm, setSearchTerm] = useState('');
 
-// SEO metadata for letters page
-export const metadata: Metadata = {
-  title: "Letters | Personal Messages to Students Learning Tech",
-  description: "Intimate, encouraging letters to students navigating the journey of learning programming. Real talk about confusion, struggles, and staying in the game.",
-  keywords: ["learning programming", "student letters", "coding motivation", "tech student advice", "programming encouragement"],
-  openGraph: {
-    title: "Letters | Personal Messages to Students Learning Tech",
-    description: "Intimate, encouraging letters to students navigating the journey of learning programming.",
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Letters | Personal Messages to Students Learning Tech",
-    description: "Intimate, encouraging letters to students navigating the journey of learning programming.",
-  },
-};
+  useEffect(() => {
+    fetchLetters();
+  }, []);
 
-export default async function LettersPage() {
-  const letters = await getLetters();
+  useEffect(() => {
+    filterLetters();
+  }, [letters, selectedSeries, searchTerm]);
+
+  const fetchLetters = async () => {
+    try {
+      const response = await fetch('/api/letters');
+      if (response.ok) {
+        const data = await response.json();
+        setLetters(data);
+      }
+    } catch (error) {
+      console.error('Error fetching letters:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const filterLetters = () => {
+    let filtered = letters;
+
+    // Filter by series
+    if (selectedSeries !== 'all') {
+      filtered = filtered.filter(letter => letter.series === selectedSeries);
+    }
+
+    // Filter by search term
+    if (searchTerm) {
+      filtered = filtered.filter(letter =>
+        letter.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        letter.recipient.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        letter.excerpt.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    setFilteredLetters(filtered);
+  };
+
+  // Get unique series from letters
+  const uniqueSeries = Array.from(new Set(letters.map(l => l.series).filter(Boolean)));
+
+  if (isLoading) {
+    return (
+      <main className="max-w-7xl mx-auto bg-[var(--color-warm-bg)] md:max-w-[80vw] px-4 py-20">
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="max-w-7xl mx-auto bg-[var(--color-warm-bg)] md:max-w-[80vw] px-4 py-20">
@@ -48,12 +91,85 @@ export default async function LettersPage() {
         </p>
       </section>
 
+      {/* FILTERS */}
+      {letters.length > 0 && (
+        <section className="mb-8 space-y-4">
+          {/* Search Bar */}
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Search letters by title, recipient..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-10 pr-4 py-3 bg-white/70 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+            />
+          </div>
+
+          {/* Series Filter */}
+          {uniqueSeries.length > 0 && (
+            <div className="flex flex-wrap gap-2">
+              <button
+                onClick={() => setSelectedSeries('all')}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  selectedSeries === 'all'
+                    ? 'bg-gray-900 text-white'
+                    : 'bg-white/70 text-gray-700 hover:bg-white'
+                }`}
+              >
+                All Letters
+              </button>
+              {uniqueSeries.map((series) => (
+                <button
+                  key={series}
+                  onClick={() => setSelectedSeries(series!)}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                    selectedSeries === series
+                      ? 'bg-gray-900 text-white'
+                      : 'bg-white/70 text-gray-700 hover:bg-white'
+                  }`}
+                >
+                  {series}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {/* Results Count */}
+          <p className="text-sm text-gray-600">
+            Showing {filteredLetters.length} of {letters.length} letters
+            {selectedSeries !== 'all' && ` in "${selectedSeries}"`}
+            {searchTerm && ` matching "${searchTerm}"`}
+          </p>
+        </section>
+      )}
+
       {/* LETTERS GRID */}
-      {letters.length > 0 ? (
+      {filteredLetters.length > 0 ? (
         <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-          {letters.map((letter, index) => (
+          {filteredLetters.map((letter, index) => (
             <LetterCard key={letter.id} letter={letter} index={index} />
           ))}
+        </section>
+      ) : letters.length > 0 ? (
+        <section className="text-center py-20">
+          <div className="bg-white/70 rounded-xl p-12 max-w-2xl mx-auto">
+            <h2 className="text-2xl font-semibold text-gray-800 mb-4">
+              No letters found
+            </h2>
+            <p className="text-gray-600 mb-6">
+              Try adjusting your filters or search terms.
+            </p>
+            <button
+              onClick={() => {
+                setSelectedSeries('all');
+                setSearchTerm('');
+              }}
+              className="px-6 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors"
+            >
+              Clear Filters
+            </button>
+          </div>
         </section>
       ) : (
         <section className="text-center py-20">

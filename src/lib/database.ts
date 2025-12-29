@@ -806,4 +806,52 @@ export async function getFeaturedLetter(): Promise<Letter | null> {
   }
 }
 
+/**
+ * Feature a letter (unfeatures all others first)
+ */
+export async function featureLetter(id: string): Promise<boolean> {
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+    
+    // Unfeature all other letters
+    await client.query('UPDATE letters SET is_featured = false');
+    
+    // Feature the selected letter
+    const result = await client.query(
+      'UPDATE letters SET is_featured = true, updated_at = CURRENT_TIMESTAMP WHERE id = $1',
+      [id]
+    );
+    
+    await client.query('COMMIT');
+    return result.rowCount !== null && result.rowCount > 0;
+  } catch (error) {
+    await client.query('ROLLBACK');
+    console.error('Error featuring letter:', error);
+    throw error;
+  } finally {
+    client.release();
+  }
+}
+
+/**
+ * Unfeature a letter
+ */
+export async function unfeatureLetter(id: string): Promise<boolean> {
+  const client = await pool.connect();
+  try {
+    const result = await client.query(
+      'UPDATE letters SET is_featured = false, updated_at = CURRENT_TIMESTAMP WHERE id = $1',
+      [id]
+    );
+    
+    return result.rowCount !== null && result.rowCount > 0;
+  } catch (error) {
+    console.error('Error unfeaturing letter:', error);
+    throw error;
+  } finally {
+    client.release();
+  }
+}
+
 export default pool;
