@@ -10,7 +10,8 @@ import {
   Calendar,
   Search,
   Mail,
-  Hash
+  Hash,
+  Star
 } from 'lucide-react';
 import { Letter } from '@/lib/database';
 
@@ -22,6 +23,7 @@ export default function LettersAdminPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
   const [deleteError, setDeleteError] = useState<string>('');
+  const [featuringLetter, setFeaturingLetter] = useState<string | null>(null);
 
   // Fetch letters
   useEffect(() => {
@@ -83,6 +85,39 @@ export default function LettersAdminPage() {
       console.error('Error deleting letter:', error);
       setDeleteError('Failed to delete letter. Please try again.');
       setTimeout(() => setDeleteError(''), 5000);
+    }
+  };
+
+  const handleToggleFeature = async (letterId: string, currentlyFeatured: boolean) => {
+    try {
+      setFeaturingLetter(letterId);
+      
+      const endpoint = currentlyFeatured ? '/api/letters/unfeature' : '/api/letters/feature';
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id: letterId }),
+      });
+
+      if (response.ok) {
+        // Update local state
+        setLetters(letters.map(letter => ({
+          ...letter,
+          is_featured: letter.id === letterId ? !currentlyFeatured : false
+        })));
+      } else {
+        const error = await response.json();
+        setDeleteError(error.error || 'Failed to update featured status');
+        setTimeout(() => setDeleteError(''), 5000);
+      }
+    } catch (error) {
+      console.error('Error toggling feature:', error);
+      setDeleteError('Failed to update featured status. Please try again.');
+      setTimeout(() => setDeleteError(''), 5000);
+    } finally {
+      setFeaturingLetter(null);
     }
   };
 
@@ -286,6 +321,18 @@ export default function LettersAdminPage() {
                         <div className="flex items-center justify-end gap-2">
                           {!letter.is_deleted && (
                             <>
+                              <button
+                                onClick={() => handleToggleFeature(letter.id, letter.is_featured || false)}
+                                disabled={featuringLetter === letter.id}
+                                className={`p-2 rounded-lg transition-colors ${
+                                  letter.is_featured
+                                    ? 'text-yellow-600 hover:text-yellow-900 hover:bg-yellow-50'
+                                    : 'text-gray-400 hover:text-yellow-600 hover:bg-yellow-50'
+                                }`}
+                                title={letter.is_featured ? 'Unfeature letter' : 'Feature letter'}
+                              >
+                                <Star className={`w-4 h-4 ${letter.is_featured ? 'fill-current' : ''}`} />
+                              </button>
                               <Link
                                 href={`/admin/letters/edit/${letter.id}`}
                                 className="p-2 text-blue-600 hover:text-blue-900 hover:bg-blue-50 rounded-lg transition-colors"
