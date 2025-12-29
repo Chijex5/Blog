@@ -71,6 +71,7 @@ npm run dev
 - `npm run lint` - Run ESLint to check code quality
 - `npm run db:seed-admin` - Create a new admin user (requires database setup)
 - `npm run db:migrate-slug` - Add slug column and generate slugs for existing posts
+- `npm run db:migrate-letters` - Create letters table for Letters feature
 - `npm run db:optimize` - Optimize database with performance indexes
 
 ## Admin Dashboard

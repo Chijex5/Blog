@@ -53,6 +53,31 @@ export interface Subscriber {
   is_active: boolean;
 }
 
+export interface Letter {
+  id: string;
+  letter_number: number;
+  title: string;
+  subtitle?: string;
+  recipient: string;
+  content: string;
+  excerpt: string;
+  author: string;
+  slug: string;
+  image?: string;
+  read_time: string;
+  published_date: string;
+  created_at: Date;
+  updated_at: Date;
+  created_by?: string;
+  updated_by?: string;
+  is_deleted?: boolean;
+  is_featured?: boolean;
+  series?: string;
+  tags: string[];
+  views?: number;
+  shares?: number;
+}
+
 /**
  * Initialize database tables
  */
@@ -554,6 +579,64 @@ export async function unpinPost(id: string): Promise<boolean> {
     return result.rowCount !== null && result.rowCount > 0;
   } catch (error) {
     console.error('Error unpinning post:', error);
+    throw error;
+  } finally {
+    client.release();
+  }
+}
+
+/**
+ * Get all letters (excludes deleted letters by default for public view)
+ */
+export async function getAllLetters(): Promise<Letter[]> {
+  const client = await pool.connect();
+  try {
+    const result = await client.query(
+      'SELECT * FROM letters WHERE is_deleted = false ORDER BY letter_number DESC'
+    );
+    
+    return result.rows;
+  } catch (error) {
+    console.error('Error getting letters:', error);
+    throw error;
+  } finally {
+    client.release();
+  }
+}
+
+/**
+ * Get a single letter by slug (excludes deleted letters for public view)
+ */
+export async function getLetterBySlug(slug: string): Promise<Letter | null> {
+  const client = await pool.connect();
+  try {
+    const result = await client.query(
+      'SELECT * FROM letters WHERE slug = $1 AND is_deleted = false',
+      [slug]
+    );
+    
+    return result.rows[0] || null;
+  } catch (error) {
+    console.error('Error getting letter by slug:', error);
+    throw error;
+  } finally {
+    client.release();
+  }
+}
+
+/**
+ * Get featured letter (if any)
+ */
+export async function getFeaturedLetter(): Promise<Letter | null> {
+  const client = await pool.connect();
+  try {
+    const result = await client.query(
+      'SELECT * FROM letters WHERE is_featured = true AND is_deleted = false LIMIT 1'
+    );
+    
+    return result.rows[0] || null;
+  } catch (error) {
+    console.error('Error getting featured letter:', error);
     throw error;
   } finally {
     client.release();

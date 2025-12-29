@@ -1,5 +1,5 @@
 "use client";
-import { HomeIcon, UserCircle2Icon, Mail } from "lucide-react";
+import { HomeIcon, UserCircle2Icon, FileText, Mail } from "lucide-react";
 import { FiGithub } from "react-icons/fi";
 import { BsTwitterX } from "react-icons/bs";
 import React from "react";
@@ -11,6 +11,7 @@ export default function MobileNav() {
     const navItems = [
     { icon: HomeIcon, label: 'Home', href: '/', isExternal: false },
     { icon: UserCircle2Icon, label: 'About', href: '/about', isExternal: false },
+    { icon: FileText, label: 'Letters', href: '/letters', isExternal: false },
     { icon: FiGithub, label: 'GitHub', href: 'https://github.com/chijex5', isExternal: true },
     { icon: BsTwitterX, label: 'Twitter', href: 'https://x.com/chijex5', isExternal: true },
     { icon: Mail, label: 'Email', href: 'mailto:chijioke@uzodinma.tech', isExternal: true }

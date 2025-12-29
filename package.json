@@ -11,6 +11,7 @@
     "db:migrate": "node scripts/migrate-add-is-deleted.js",
     "db:migrate-pinned": "node scripts/migrate-add-is-pinned.js",
     "db:migrate-slug": "node scripts/migrate-add-slug.js",
+    "db:migrate-letters": "node scripts/migrate-add-letters.js",
     "db:optimize": "node scripts/optimize-database.js"
   },
   "dependencies": {
