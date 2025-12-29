@@ -10,7 +10,8 @@
     "db:seed-admin": "node scripts/seed-admin.js",
     "db:migrate": "node scripts/migrate-add-is-deleted.js",
     "db:migrate-pinned": "node scripts/migrate-add-is-pinned.js",
-    "db:migrate-slug": "node scripts/migrate-add-slug.js"
+    "db:migrate-slug": "node scripts/migrate-add-slug.js",
+    "db:optimize": "node scripts/optimize-database.js"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.15",

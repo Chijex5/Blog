@@ -233,9 +233,6 @@ export default function SidebarApp() {
             <SidebarMenuButton to="/about" icon={User} isActive={pathname === "/about"}>
               About
             </SidebarMenuButton>
-            <SidebarMenuButton to="/letters" icon={FileText} badge={6} isActive={pathname === "/letters"}>
-              Letters
-            </SidebarMenuButton>
           </SidebarGroup>
 
           {/* Find Me Section */}
