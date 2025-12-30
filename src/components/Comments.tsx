@@ -2,15 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { MessageCircle, Loader2 } from 'lucide-react';
-
-interface Comment {
-  id: string;
-  post_id: string;
-  author_name: string;
-  author_email: string;
-  content: string;
-  created_at: string;
-}
+import { Comment } from '@/lib/database';
 
 interface CommentsProps {
   postId: string;
@@ -36,13 +28,17 @@ export default function Comments({ postId }: CommentsProps) {
   const fetchComments = async () => {
     try {
       setLoading(true);
+      setError(null);
       const response = await fetch(`/api/comments?postId=${postId}`);
       if (response.ok) {
         const data = await response.json();
         setComments(data);
+      } else {
+        setError('Failed to load comments. Please try again later.');
       }
     } catch (err) {
       console.error('Error fetching comments:', err);
+      setError('Failed to load comments. Please try again later.');
     } finally {
       setLoading(false);
     }
@@ -93,7 +89,7 @@ export default function Comments({ postId }: CommentsProps) {
     }
   };
 
-  const formatDate = (dateString: string) => {
+  const formatDate = (dateString: string | Date) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', {
       year: 'numeric',

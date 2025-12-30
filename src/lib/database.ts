@@ -918,7 +918,7 @@ export async function getCommentCountByPostId(postId: string): Promise<number> {
       [postId]
     );
     
-    return parseInt(result.rows[0]?.count || '0', 10);
+    return result.rows[0]?.count ?? 0;
   } catch (error) {
     console.error('Error getting comment count:', error);
     throw error;
