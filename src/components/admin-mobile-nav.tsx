@@ -6,12 +6,17 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from 'next-auth/react';
 
+// Animation constants
+const ANIMATION_DURATION = 300;
+const SWIPE_THRESHOLD = 100;
+
 export default function AdminMobileNav() {
   const [showCreateMenu, setShowCreateMenu] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
   const sheetRef = useRef<HTMLDivElement>(null);
   const startYRef = useRef<number>(0);
   const currentYRef = useRef<number>(0);
+  const rafRef = useRef<number>();
   
   const navItems = [
     { icon: LayoutDashboard, label: 'Dashboard', href: '/admin/dashboard' },
@@ -38,14 +43,22 @@ export default function AdminMobileNav() {
     const deltaY = e.touches[0].clientY - startYRef.current;
     if (deltaY > 0) {
       currentYRef.current = deltaY;
-      if (sheetRef.current) {
-        sheetRef.current.style.transform = `translateY(${deltaY}px)`;
+      
+      // Use RAF for smoother animations
+      if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current);
       }
+      
+      rafRef.current = requestAnimationFrame(() => {
+        if (sheetRef.current) {
+          sheetRef.current.style.transform = `translateY(${deltaY}px)`;
+        }
+      });
     }
   };
 
   const handleTouchEnd = () => {
-    if (currentYRef.current > 100) {
+    if (currentYRef.current > SWIPE_THRESHOLD) {
       closeSheet();
     } else if (sheetRef.current) {
       sheetRef.current.style.transform = 'translateY(0)';
@@ -57,7 +70,7 @@ export default function AdminMobileNav() {
     setTimeout(() => {
       setShowCreateMenu(false);
       setIsAnimating(false);
-    }, 300);
+    }, ANIMATION_DURATION);
   };
 
   const openSheet = () => {
@@ -73,6 +86,9 @@ export default function AdminMobileNav() {
     }
     return () => {
       document.body.style.overflow = '';
+      if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current);
+      }
     };
   }, [showCreateMenu]);
   
