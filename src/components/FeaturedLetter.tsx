@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { Mail, ArrowUpRightIcon } from "lucide-react";
 import { Letter } from "@/lib/database";
@@ -10,11 +10,7 @@ export default function FeaturedLetter({ isCollapsed }: { isCollapsed: boolean }
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
-  useEffect(() => {
-    fetchFeaturedLetter();
-  }, []);
-
-  const fetchFeaturedLetter = async () => {
+  const fetchFeaturedLetter = useCallback(async () => {
     try {
       const response = await fetch('/api/letters/featured');
       if (response.ok) {
@@ -26,7 +22,11 @@ export default function FeaturedLetter({ isCollapsed }: { isCollapsed: boolean }
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchFeaturedLetter();
+  }, [fetchFeaturedLetter]);
 
   // Don't show anything while loading
   if (loading) return null;

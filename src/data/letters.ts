@@ -1,17 +1,24 @@
 import { Letter } from "@/lib/database";
 import { getAllLetters, getLetterBySlug } from '@/lib/database';
 
+interface TipTapContent {
+  type: string;
+  content?: TipTapContent[];
+  text?: string;
+  [key: string]: unknown;
+}
+
 /**
  * Parse content - handles both HTML strings and TipTap JSON
  */
-function parseContent(content: any): any {
+function parseContent(content: unknown): TipTapContent {
   if (!content) {
     return { type: 'doc', content: [] };
   }
   
-  // If it's already an object, return it
-  if (typeof content === 'object' && content.type) {
-    return content;
+  // If it's already a TipTap object, return it
+  if (typeof content === 'object' && content !== null && 'type' in content) {
+    return content as TipTapContent;
   }
   
   // If it's a string, try to parse as JSON
@@ -38,7 +45,9 @@ function parseContent(content: any): any {
     // Try to parse as JSON
     try {
       const parsed = JSON.parse(content);
-      return parsed;
+      if (typeof parsed === 'object' && parsed !== null && 'type' in parsed) {
+        return parsed as TipTapContent;
+      }
     } catch (e) {
       // If parsing fails, treat as plain text
       return {
@@ -58,7 +67,8 @@ function parseContent(content: any): any {
     }
   }
   
-  return content;
+  // Fallback for unexpected types
+  return { type: 'doc', content: [] };
 }
 
 /**

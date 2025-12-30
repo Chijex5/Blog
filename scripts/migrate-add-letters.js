@@ -49,7 +49,7 @@ async function migrate() {
       // Create the letters table
       await client.query(`
         CREATE TABLE letters (
-          id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid(),
+          id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
           letter_number INTEGER UNIQUE NOT NULL,
           title VARCHAR(500) NOT NULL,
           subtitle VARCHAR(500),

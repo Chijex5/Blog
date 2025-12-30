@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import LetterCard from "@/components/LetterCard";
 import Footer from "@/components/Footer";
 import { Letter } from "@/lib/database";
@@ -17,25 +17,7 @@ export default function LettersPage() {
     fetchLetters();
   }, []);
 
-  useEffect(() => {
-    filterLetters();
-  }, [letters, selectedSeries, searchTerm]);
-
-  const fetchLetters = async () => {
-    try {
-      const response = await fetch('/api/letters');
-      if (response.ok) {
-        const data = await response.json();
-        setLetters(data);
-      }
-    } catch (error) {
-      console.error('Error fetching letters:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const filterLetters = () => {
+  const filterLetters = useCallback(() => {
     let filtered = letters;
 
     // Filter by series
@@ -53,10 +35,31 @@ export default function LettersPage() {
     }
 
     setFilteredLetters(filtered);
+  }, [letters, selectedSeries, searchTerm]);
+
+  useEffect(() => {
+    filterLetters();
+  }, [filterLetters]);
+
+  const fetchLetters = async () => {
+    try {
+      const response = await fetch('/api/letters');
+      if (response.ok) {
+        const data = await response.json();
+        setLetters(data);
+      }
+    } catch (error) {
+      console.error('Error fetching letters:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  // Get unique series from letters
-  const uniqueSeries = Array.from(new Set(letters.map(l => l.series).filter(Boolean)));
+  // Get unique series from letters - memoize to prevent recalculation
+  const uniqueSeries = useMemo(() => 
+    Array.from(new Set(letters.map(l => l.series).filter(Boolean))),
+    [letters]
+  );
 
   if (isLoading) {
     return (

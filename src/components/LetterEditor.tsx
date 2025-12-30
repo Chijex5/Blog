@@ -92,10 +92,18 @@ export default function LetterEditor({ letterId, letterData }: { letterId?: stri
     }
 
     // Validate image URL if provided
-    if (image && !image.match(/^https?:\/\/.+/)) {
-      setSaveMessage('Please enter a valid image URL starting with http:// or https://');
-      setTimeout(() => setSaveMessage(''), 3000);
-      return;
+    if (image) {
+      const trimmedImage = image.trim();
+      try {
+        const url = new URL(trimmedImage);
+        if (url.protocol !== 'http:' && url.protocol !== 'https:') {
+          throw new Error('Invalid protocol');
+        }
+      } catch {
+        setSaveMessage('Please enter a valid image URL starting with http:// or https://');
+        setTimeout(() => setSaveMessage(''), 3000);
+        return;
+      }
     }
 
     setIsSaving(true);
