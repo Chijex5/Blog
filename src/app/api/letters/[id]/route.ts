@@ -3,9 +3,15 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth-options';
 import { getLetterIncludingDeleted, deleteLetter } from '@/lib/database';
 
+interface RouteContext {
+  params: Promise<{
+    id: string;
+  }>;
+}
+
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: RouteContext
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -15,8 +21,8 @@ export async function GET(
         { status: 401 }
       );
     }
-
-    const letter = await getLetterIncludingDeleted(params.id);
+     const { id } = await context.params;
+    const letter = await getLetterIncludingDeleted(id);
     
     if (!letter) {
       return NextResponse.json(
@@ -37,7 +43,7 @@ export async function GET(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: RouteContext
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -47,9 +53,9 @@ export async function DELETE(
         { status: 401 }
       );
     }
+    const { id } = await context.params;
+    const success = await deleteLetter(id);
 
-    const success = await deleteLetter(params.id);
-    
     if (!success) {
       return NextResponse.json(
         { error: 'Letter not found or already deleted' },
