@@ -16,7 +16,7 @@ export default function AdminMobileNav() {
   const sheetRef = useRef<HTMLDivElement>(null);
   const startYRef = useRef<number>(0);
   const currentYRef = useRef<number>(0);
-  const rafRef = useRef<number>();
+  const rafRef = useRef<number>(0);
   
   const navItems = [
     { icon: LayoutDashboard, label: 'Dashboard', href: '/admin/dashboard' },
