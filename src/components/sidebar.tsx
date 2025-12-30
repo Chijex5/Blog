@@ -213,10 +213,12 @@ export function SidebarMenuButton({
 
 // Demo App Component
 export default function SidebarApp() {
-    const pathname = usePathname();
-    if (pathname.startsWith('/admin')) {
-      return null;
-    }
+  const { isCollapsed } = useSidebar()
+  const pathname = usePathname();
+  if (pathname.startsWith('/admin')) {
+    return null;
+  }
+  
   return (
       <Sidebar>
         <SidebarToggle />

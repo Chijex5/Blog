@@ -296,6 +296,7 @@ export default function LetterEditor({ letterId, letterData }: { letterId?: stri
                 <h3 className="text-sm font-semibold text-gray-900 mb-4">Series</h3>
                 <select
                   value={series}
+                  title={'Series'}
                   onChange={(e) => setSeries(e.target.value)}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent"
                 >

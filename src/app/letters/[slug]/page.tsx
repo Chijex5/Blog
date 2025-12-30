@@ -16,9 +16,16 @@ export async function generateStaticParams() {
   }));
 }
 
+interface PageProps {
+  params: Promise<{
+    slug: string;
+  }>;
+}
+
 // Generate metadata for SEO
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  const letter = await getLetter(params.slug);
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const letter = await getLetter(slug);
 
   if (!letter) {
     return {
@@ -35,6 +42,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
       description: letter.excerpt,
       type: 'article',
       publishedTime: letter.published_date,
+      siteName: "Chijioke's Blog - Letters",
       authors: [letter.author],
       images: letter.image ? [letter.image] : [],
     },
@@ -47,8 +55,9 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   };
 }
 
-export default async function LetterPage({ params }: { params: { slug: string } }) {
-  const letter = await getLetter(params.slug);
+export default async function LetterPage({ params }: PageProps) {
+  const { slug } = await params;
+  const letter = await getLetter(slug);
 
   if (!letter) {
     notFound();
@@ -58,6 +67,9 @@ export default async function LetterPage({ params }: { params: { slug: string } 
   const contentHTML = typeof letter.content === 'string' 
     ? letter.content 
     : generateHTML(letter.content, [StarterKit, Highlight]);
+
+  const shareUrl = `https://chijioke.app/letters/${letter.slug}`;
+  const tweetText = `Letter #${letter.letter_number}: ${letter.title}`;
 
   return (
     <main className="min-h-screen bg-[var(--color-warm-bg)]">
@@ -153,7 +165,9 @@ export default async function LetterPage({ params }: { params: { slug: string } 
           </p>
           <div className="flex gap-3">
             <a
-              href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`Letter #${letter.letter_number}: ${letter.title}`)}&url=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : '')}`}
+              href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(
+                tweetText
+              )}&url=${encodeURIComponent(shareUrl)}`}
               target="_blank"
               rel="noopener noreferrer"
               className="px-4 py-2 bg-black text-white rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors"
