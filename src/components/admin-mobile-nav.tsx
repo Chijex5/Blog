@@ -1,6 +1,6 @@
 "use client";
 
-import { LayoutDashboard, FileText, PlusCircle, Users, Home, LogOut, Mail, ChevronDown } from "lucide-react";
+import { LayoutDashboard, FileText, PlusCircle, Users, Home, LogOut, Mail } from "lucide-react";
 import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
