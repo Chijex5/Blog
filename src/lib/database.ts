@@ -946,14 +946,5 @@ export async function deleteComment(id: string): Promise<boolean> {
     client.release();
   }
 }
-    
-    return result.rowCount !== null && result.rowCount > 0;
-  } catch (error) {
-    console.error('Error unfeaturing letter:', error);
-    throw error;
-  } finally {
-    client.release();
-  }
-}
 
 export default pool;
