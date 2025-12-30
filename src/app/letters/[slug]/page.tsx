@@ -64,9 +64,20 @@ export default async function LetterPage({ params }: PageProps) {
   }
 
   // Convert TipTap JSON to HTML
-  const contentHTML = typeof letter.content === 'string' 
-    ? letter.content 
-    : generateHTML(letter.content, [StarterKit, Highlight]);
+  let contentHTML: string;
+  try {
+    // If content is a string, try to parse it as JSON first
+    const contentObj = typeof letter.content === 'string' 
+      ? JSON.parse(letter.content)
+      : letter.content;
+    
+    // Generate HTML from TipTap JSON
+    contentHTML = generateHTML(contentObj, [StarterKit, Highlight]);
+  } catch (error) {
+    // Fallback: if it's already HTML or parsing fails, use as-is
+    contentHTML = typeof letter.content === 'string' ? letter.content : '';
+    console.error('Error parsing letter content:', error);
+  }
 
   const shareUrl = `https://chijioke.app/letters/${letter.slug}`;
   const tweetText = `Letter #${letter.letter_number}: ${letter.title}`;
