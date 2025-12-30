@@ -16,7 +16,7 @@ import {
 import { Letter } from '@/lib/database';
 
 export default function LettersAdminPage() {
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const [letters, setLetters] = useState<Letter[]>([]);
   const [filteredLetters, setFilteredLetters] = useState<Letter[]>([]);
   const [isLoading, setIsLoading] = useState(true);
