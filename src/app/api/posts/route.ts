@@ -45,6 +45,7 @@ export async function POST(request: NextRequest) {
       content: body.content,
       author: body.author || 'Anonymous',
       tags: body.tags || [],
+      category: body.category || null,
       image: body.image,
       read_time: body.readTime || '1 min read',
       date: body.date || new Date().toISOString(),

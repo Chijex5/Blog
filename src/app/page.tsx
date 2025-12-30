@@ -9,7 +9,7 @@ import { RiSearchLine } from "react-icons/ri";
 import type { Metadata } from 'next';
 import Newsletter from "./newsLetter"
 
-const categories = ["All", "Audience", "Writing", "Business", "Mindset"]
+const categories = ["All", "Reality Checks", "Survival Guides", "Stories & Reflections", "Direction & Growth", "Confidence Builders"]
 
 export const revalidate = 60;
 

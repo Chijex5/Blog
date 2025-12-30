@@ -33,6 +33,7 @@ export interface BlogPost {
   content: string;
   author: string;
   tags: string[];
+  category?: string;
   image?: string;
   read_time: string;
   slug: string;
@@ -104,6 +105,7 @@ export async function initDatabase() {
         author VARCHAR(255) NOT NULL,
         slug VARCHAR(500) NOT NULL,
         tags TEXT[] DEFAULT '{}',
+        category VARCHAR(100),
         image VARCHAR(1000),
         read_time VARCHAR(50) NOT NULL,
         date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -118,6 +120,7 @@ export async function initDatabase() {
       CREATE INDEX IF NOT EXISTS idx_blog_posts_deleted ON blog_posts(is_deleted);
       CREATE INDEX IF NOT EXISTS idx_blog_posts_id_deleted ON blog_posts(id, is_deleted);
       CREATE INDEX IF NOT EXISTS idx_blog_posts_pinned ON blog_posts(is_pinned) WHERE is_pinned = true;
+      CREATE INDEX IF NOT EXISTS idx_blog_posts_category ON blog_posts(category);
       CREATE UNIQUE INDEX IF NOT EXISTS idx_blog_posts_slug ON blog_posts(slug);
 
       CREATE TABLE IF NOT EXISTS subscribers (
@@ -174,12 +177,13 @@ export async function savePost(post: Omit<BlogPost, 'created_at' | 'updated_at'>
           author = $4,
           slug = $5,
           tags = $6,
-          image = $7,
-          read_time = $8,
-          date = $9,
+          category = $7,
+          image = $8,
+          read_time = $9,
+          date = $10,
           updated_at = CURRENT_TIMESTAMP,
-          updated_by = $10
-        WHERE id = $11
+          updated_by = $11
+        WHERE id = $12
         RETURNING *;`,
         [
           post.title,
@@ -188,6 +192,7 @@ export async function savePost(post: Omit<BlogPost, 'created_at' | 'updated_at'>
           post.author,
           post.slug,
           post.tags,
+          post.category,
           post.image,
           post.read_time,
           post.date,
@@ -211,6 +216,7 @@ export async function savePost(post: Omit<BlogPost, 'created_at' | 'updated_at'>
         content,
         author,
         tags,
+        category,
         image,
         read_time,
         date,
@@ -220,7 +226,7 @@ export async function savePost(post: Omit<BlogPost, 'created_at' | 'updated_at'>
       )
       VALUES (
         $1, $2, $3, $4, $5,
-        $6, $7, $8, $9, $10, $11
+        $6, $7, $8, $9, $10, $11, $12
       )
       RETURNING *;`,
       [
@@ -229,12 +235,13 @@ export async function savePost(post: Omit<BlogPost, 'created_at' | 'updated_at'>
         post.content,    // $3
         post.author,     // $4
         post.tags,       // $5
-        post.image,      // $6
-        post.read_time,  // $7
-        post.date,       // $8
-        post.slug,       // $9
-        post.created_by, // $10 created_by
-        post.updated_by  // $11 updated_by
+        post.category,   // $6
+        post.image,      // $7
+        post.read_time,  // $8
+        post.date,       // $9
+        post.slug,       // $10
+        post.created_by, // $11 created_by
+        post.updated_by  // $12 updated_by
       ]
     );
     
