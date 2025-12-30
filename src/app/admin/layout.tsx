@@ -23,7 +23,8 @@ import {
   PlusCircle,
   LogOut,
   Settings,
-  Home
+  Home,
+  Mail
 } from 'lucide-react';
 
 function AdminProfileSection() {
@@ -74,6 +75,13 @@ function AdminSidebar() {
             isActive={pathname === '/admin/posts'}
           >
             All Posts
+          </SidebarMenuButton>
+          <SidebarMenuButton 
+            to="/admin/letters" 
+            icon={Mail} 
+            isActive={pathname === '/admin/letters'}
+          >
+            Letters
           </SidebarMenuButton>
           <SidebarMenuButton 
             to="/admin/create/new" 

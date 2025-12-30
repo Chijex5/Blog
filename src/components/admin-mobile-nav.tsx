@@ -1,6 +1,6 @@
 "use client";
 
-import { LayoutDashboard, FileText, PlusCircle, Users, Home, LogOut } from "lucide-react";
+import { LayoutDashboard, FileText, PlusCircle, Users, Home, LogOut, Mail } from "lucide-react";
 import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -10,8 +10,8 @@ export default function AdminMobileNav() {
   const navItems = [
     { icon: LayoutDashboard, label: 'Dashboard', href: '/admin/dashboard' },
     { icon: FileText, label: 'Posts', href: '/admin/posts' },
+    { icon: Mail, label: 'Letters', href: '/admin/letters' },
     { icon: PlusCircle, label: 'New', href: '/admin/create/new' },
-    { icon: Users, label: 'Admins', href: '/admin/admins' },
     { icon: Home, label: 'Site', href: '/' },
     { 
       icon: LogOut, 
