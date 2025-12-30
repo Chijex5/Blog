@@ -15,6 +15,7 @@ import { Input } from "./ui/input"
 import { useRouter, usePathname } from "next/navigation"
 import { BsTwitterX } from "react-icons/bs";
 import SubscribedModal from "./subscribed-modal"
+import FeaturedLetter from "./FeaturedLetter"
 
 // Sidebar Context
 const SidebarContext = createContext<{
@@ -212,10 +213,12 @@ export function SidebarMenuButton({
 
 // Demo App Component
 export default function SidebarApp() {
-    const pathname = usePathname();
-    if (pathname.startsWith('/admin')) {
-      return null;
-    }
+  const { isCollapsed } = useSidebar()
+  const pathname = usePathname();
+  if (pathname.startsWith('/admin')) {
+    return null;
+  }
+  
   return (
       <Sidebar>
         <SidebarToggle />
@@ -233,7 +236,7 @@ export default function SidebarApp() {
             <SidebarMenuButton to="/about" icon={User} isActive={pathname === "/about"}>
               About
             </SidebarMenuButton>
-            <SidebarMenuButton to="/letters" icon={FileText} badge={6} isActive={pathname === "/letters"}>
+            <SidebarMenuButton to="/letters" icon={FileText} isActive={pathname === "/letters"}>
               Letters
             </SidebarMenuButton>
           </SidebarGroup>
@@ -254,6 +257,11 @@ export default function SidebarApp() {
 
           {/* Pinned Section */}
           <PinnedSection />
+
+          {/* Featured Letter */}
+          <SidebarGroup>
+            <FeaturedLetter isCollapsed={isCollapsed} />
+          </SidebarGroup>
         </SidebarContent>
 
         <SidebarFooter>

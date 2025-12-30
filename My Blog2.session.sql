@@ -1,1 +1,1 @@
-select * FROM blog_posts;
+DROP TABLE letters;

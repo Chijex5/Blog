@@ -1,5 +1,5 @@
 "use client";
-import { HomeIcon, UserCircle2Icon, FileText, Instagram, Youtube, Mail } from "lucide-react";
+import { HomeIcon, UserCircle2Icon, FileText, Mail } from "lucide-react";
 import { FiGithub } from "react-icons/fi";
 import { BsTwitterX } from "react-icons/bs";
 import React from "react";
