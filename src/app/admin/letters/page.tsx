@@ -160,10 +160,11 @@ export default function LettersAdminPage() {
             </div>
             <Link
               href="/admin/letters/create"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors"
+              className="inline-flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors text-sm sm:text-base"
             >
-              <FileText className="w-5 h-5" />
-              New Letter
+              <FileText className="w-4 h-4 sm:w-5 sm:h-5" />
+              <span className="hidden sm:inline">New Letter</span>
+              <span className="sm:hidden">New</span>
             </Link>
           </div>
 
@@ -223,141 +224,239 @@ export default function LettersAdminPage() {
         )}
 
         {/* Letters List */}
-        <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-          {filteredLetters.length === 0 ? (
-            <div className="p-12 text-center">
-              <FileText className="w-16 h-16 mx-auto text-gray-400 mb-4" />
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                {searchTerm ? 'No letters found' : 'No letters yet'}
-              </h3>
-              <p className="text-gray-600 mb-6">
-                {searchTerm 
-                  ? 'Try adjusting your search terms'
-                  : 'Create your first letter to get started'}
-              </p>
-              {!searchTerm && (
-                <Link
-                  href="/admin/letters/create"
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors"
+        {filteredLetters.length === 0 ? (
+          <div className="bg-white rounded-lg shadow-sm p-12 text-center">
+            <FileText className="w-16 h-16 mx-auto text-gray-400 mb-4" />
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">
+              {searchTerm ? 'No letters found' : 'No letters yet'}
+            </h3>
+            <p className="text-gray-600 mb-6">
+              {searchTerm 
+                ? 'Try adjusting your search terms'
+                : 'Create your first letter to get started'}
+            </p>
+            {!searchTerm && (
+              <Link
+                href="/admin/letters/create"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors"
+              >
+                <FileText className="w-5 h-5" />
+                Create First Letter
+              </Link>
+            )}
+          </div>
+        ) : (
+          <>
+            {/* Mobile Card View */}
+            <div className="md:hidden space-y-4">
+              {filteredLetters.map((letter) => (
+                <div 
+                  key={letter.id} 
+                  className={`bg-white rounded-lg shadow-sm p-4 ${letter.is_deleted ? 'opacity-60' : ''}`}
                 >
-                  <FileText className="w-5 h-5" />
-                  Create First Letter
-                </Link>
-              )}
+                  {/* Letter Header */}
+                  <div className="flex items-start gap-3 mb-3">
+                    <div className="flex-shrink-0 w-10 h-10 bg-[var(--color-warm-accent)] rounded-full flex items-center justify-center text-xs font-bold">
+                      #{letter.letter_number}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-sm font-medium text-gray-900 mb-1">
+                        {letter.title}
+                      </h3>
+                      <p className="text-xs text-gray-500 line-clamp-2">
+                        {letter.excerpt}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Letter Details */}
+                  <div className="space-y-2 mb-3">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-gray-500">Recipient:</span>
+                      <span className="text-gray-900 font-medium">{letter.recipient}</span>
+                    </div>
+                    
+                    {letter.series && (
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="text-gray-500">Series:</span>
+                        <span className="px-2 py-1 text-xs font-medium bg-gray-100 text-gray-800 rounded-full">
+                          {letter.series}
+                        </span>
+                      </div>
+                    )}
+                    
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-gray-500">Date:</span>
+                      <div className="flex items-center gap-1 text-gray-900">
+                        <Calendar className="w-3 h-3" />
+                        {new Date(letter.published_date).toLocaleDateString()}
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-gray-500">Status:</span>
+                      {letter.is_deleted ? (
+                        <span className="px-2 py-1 text-xs font-medium bg-red-100 text-red-800 rounded-full">
+                          Deleted
+                        </span>
+                      ) : (
+                        <span className="px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">
+                          Published
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Actions */}
+                  {!letter.is_deleted && (
+                    <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-100">
+                      <button
+                        onClick={() => handleToggleFeature(letter.id, letter.is_featured || false)}
+                        disabled={featuringLetter === letter.id}
+                        className={`p-2 rounded-lg transition-colors ${
+                          letter.is_featured
+                            ? 'text-yellow-600 hover:text-yellow-900 hover:bg-yellow-50'
+                            : 'text-gray-400 hover:text-yellow-600 hover:bg-yellow-50'
+                        }`}
+                        title={letter.is_featured ? 'Unfeature letter' : 'Feature letter'}
+                      >
+                        <Star className={`w-4 h-4 ${letter.is_featured ? 'fill-current' : ''}`} />
+                      </button>
+                      <Link
+                        href={`/admin/letters/edit/${letter.id}`}
+                        className="p-2 text-blue-600 hover:text-blue-900 hover:bg-blue-50 rounded-lg transition-colors"
+                        title="Edit letter"
+                      >
+                        <Edit className="w-4 h-4" />
+                      </Link>
+                      <button
+                        onClick={() => setDeleteConfirm(letter.id)}
+                        className="p-2 text-red-600 hover:text-red-900 hover:bg-red-50 rounded-lg transition-colors"
+                        title="Delete letter"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ))}
             </div>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Letter
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Recipient
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Series
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Date
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Status
-                    </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {filteredLetters.map((letter) => (
-                    <tr key={letter.id} className={letter.is_deleted ? 'bg-gray-50 opacity-60' : ''}>
-                      <td className="px-6 py-4">
-                        <div className="flex items-start">
-                          <div className="flex-shrink-0 w-10 h-10 bg-[var(--color-warm-accent)] rounded-full flex items-center justify-center text-xs font-bold">
-                            #{letter.letter_number}
-                          </div>
-                          <div className="ml-4">
-                            <div className="text-sm font-medium text-gray-900">
-                              {letter.title}
-                            </div>
-                            <div className="text-sm text-gray-500 line-clamp-1">
-                              {letter.excerpt}
-                            </div>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 text-sm text-gray-500">
-                        {letter.recipient}
-                      </td>
-                      <td className="px-6 py-4">
-                        {letter.series ? (
-                          <span className="px-2 py-1 text-xs font-medium bg-gray-100 text-gray-800 rounded-full">
-                            {letter.series}
-                          </span>
-                        ) : (
-                          <span className="text-sm text-gray-400">—</span>
-                        )}
-                      </td>
-                      <td className="px-6 py-4 text-sm text-gray-500">
-                        <div className="flex items-center gap-1">
-                          <Calendar className="w-4 h-4" />
-                          {new Date(letter.published_date).toLocaleDateString()}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        {letter.is_deleted ? (
-                          <span className="px-2 py-1 text-xs font-medium bg-red-100 text-red-800 rounded-full">
-                            Deleted
-                          </span>
-                        ) : (
-                          <span className="px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">
-                            Published
-                          </span>
-                        )}
-                      </td>
-                      <td className="px-6 py-4 text-right text-sm font-medium">
-                        <div className="flex items-center justify-end gap-2">
-                          {!letter.is_deleted && (
-                            <>
-                              <button
-                                onClick={() => handleToggleFeature(letter.id, letter.is_featured || false)}
-                                disabled={featuringLetter === letter.id}
-                                className={`p-2 rounded-lg transition-colors ${
-                                  letter.is_featured
-                                    ? 'text-yellow-600 hover:text-yellow-900 hover:bg-yellow-50'
-                                    : 'text-gray-400 hover:text-yellow-600 hover:bg-yellow-50'
-                                }`}
-                                title={letter.is_featured ? 'Unfeature letter' : 'Feature letter'}
-                              >
-                                <Star className={`w-4 h-4 ${letter.is_featured ? 'fill-current' : ''}`} />
-                              </button>
-                              <Link
-                                href={`/admin/letters/edit/${letter.id}`}
-                                className="p-2 text-blue-600 hover:text-blue-900 hover:bg-blue-50 rounded-lg transition-colors"
-                                title="Edit letter"
-                              >
-                                <Edit className="w-4 h-4" />
-                              </Link>
-                              <button
-                                onClick={() => setDeleteConfirm(letter.id)}
-                                className="p-2 text-red-600 hover:text-red-900 hover:bg-red-50 rounded-lg transition-colors"
-                                title="Delete letter"
-                              >
-                                <Trash2 className="w-4 h-4" />
-                              </button>
-                            </>
-                          )}
-                        </div>
-                      </td>
+
+            {/* Desktop Table View */}
+            <div className="hidden md:block bg-white rounded-lg shadow-sm overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Letter
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Recipient
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Series
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Date
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Status
+                      </th>
+                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Actions
+                      </th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {filteredLetters.map((letter) => (
+                      <tr key={letter.id} className={letter.is_deleted ? 'bg-gray-50 opacity-60' : ''}>
+                        <td className="px-6 py-4">
+                          <div className="flex items-start">
+                            <div className="flex-shrink-0 w-10 h-10 bg-[var(--color-warm-accent)] rounded-full flex items-center justify-center text-xs font-bold">
+                              #{letter.letter_number}
+                            </div>
+                            <div className="ml-4">
+                              <div className="text-sm font-medium text-gray-900">
+                                {letter.title}
+                              </div>
+                              <div className="text-sm text-gray-500 line-clamp-1">
+                                {letter.excerpt}
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 text-sm text-gray-500">
+                          {letter.recipient}
+                        </td>
+                        <td className="px-6 py-4">
+                          {letter.series ? (
+                            <span className="px-2 py-1 text-xs font-medium bg-gray-100 text-gray-800 rounded-full">
+                              {letter.series}
+                            </span>
+                          ) : (
+                            <span className="text-sm text-gray-400">—</span>
+                          )}
+                        </td>
+                        <td className="px-6 py-4 text-sm text-gray-500">
+                          <div className="flex items-center gap-1">
+                            <Calendar className="w-4 h-4" />
+                            {new Date(letter.published_date).toLocaleDateString()}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4">
+                          {letter.is_deleted ? (
+                            <span className="px-2 py-1 text-xs font-medium bg-red-100 text-red-800 rounded-full">
+                              Deleted
+                            </span>
+                          ) : (
+                            <span className="px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">
+                              Published
+                            </span>
+                          )}
+                        </td>
+                        <td className="px-6 py-4 text-right text-sm font-medium">
+                          <div className="flex items-center justify-end gap-2">
+                            {!letter.is_deleted && (
+                              <>
+                                <button
+                                  onClick={() => handleToggleFeature(letter.id, letter.is_featured || false)}
+                                  disabled={featuringLetter === letter.id}
+                                  className={`p-2 rounded-lg transition-colors ${
+                                    letter.is_featured
+                                      ? 'text-yellow-600 hover:text-yellow-900 hover:bg-yellow-50'
+                                      : 'text-gray-400 hover:text-yellow-600 hover:bg-yellow-50'
+                                  }`}
+                                  title={letter.is_featured ? 'Unfeature letter' : 'Feature letter'}
+                                >
+                                  <Star className={`w-4 h-4 ${letter.is_featured ? 'fill-current' : ''}`} />
+                                </button>
+                                <Link
+                                  href={`/admin/letters/edit/${letter.id}`}
+                                  className="p-2 text-blue-600 hover:text-blue-900 hover:bg-blue-50 rounded-lg transition-colors"
+                                  title="Edit letter"
+                                >
+                                  <Edit className="w-4 h-4" />
+                                </Link>
+                                <button
+                                  onClick={() => setDeleteConfirm(letter.id)}
+                                  className="p-2 text-red-600 hover:text-red-900 hover:bg-red-50 rounded-lg transition-colors"
+                                  title="Delete letter"
+                                >
+                                  <Trash2 className="w-4 h-4" />
+                                </button>
+                              </>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
-          )}
-        </div>
+          </>
+        )}
 
         {/* Delete Confirmation Modal */}
         {deleteConfirm && (
