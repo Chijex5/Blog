@@ -1,1 +1,1 @@
-DROP TABLE letters;
+delete from comments

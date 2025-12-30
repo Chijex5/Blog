@@ -41,7 +41,7 @@ async function migrate() {
       await client.query(`
         CREATE TABLE comments (
           id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-          post_id VARCHAR(255) NOT NULL,
+          post_id UUID NOT NULL,
           author_name VARCHAR(255) NOT NULL,
           author_email VARCHAR(255) NOT NULL,
           content TEXT NOT NULL,
