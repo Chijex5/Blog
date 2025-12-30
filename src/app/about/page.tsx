@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { Lightbulb, BookOpen, User, Code, MapPin } from "lucide-react";
 
 export default function About() {
   return (
@@ -85,43 +86,78 @@ export default function About() {
         
         <div className="space-y-6">
           <div className="bg-white/70 rounded-xl p-6">
-            <h3 className="text-xl font-semibold mb-3">1️⃣ Reality Checks & Hard Truths</h3>
-            <p className="text-gray-700">
-              Honest, sometimes uncomfortable truths about learning tech — the kind most people don't talk about. 
-              These posts normalize confusion, frustration, and slow progress instead of pretending they disappear.
-            </p>
+            <div className="flex items-start gap-3">
+              <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-gray-900 flex items-center justify-center">
+                <Lightbulb className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <h3 className="text-xl font-semibold mb-3">Reality Checks & Hard Truths</h3>
+                <p className="text-gray-700">
+                  Honest, sometimes uncomfortable truths about learning tech — the kind most people don't talk about. 
+                  These posts normalize confusion, frustration, and slow progress instead of pretending they disappear.
+                </p>
+              </div>
+            </div>
           </div>
 
           <div className="bg-white/70 rounded-xl p-6">
-            <h3 className="text-xl font-semibold mb-3">2️⃣ Survival Guides for Beginners</h3>
-            <p className="text-gray-700">
-              Practical guidance for getting through the hardest phases of learning: when tutorials stop working, 
-              when motivation drops, and when quitting feels tempting.
-            </p>
+            <div className="flex items-start gap-3">
+              <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-gray-900 flex items-center justify-center">
+                <BookOpen className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <h3 className="text-xl font-semibold mb-3">Survival Guides for Beginners</h3>
+                <p className="text-gray-700">
+                  Practical guidance for getting through the hardest phases of learning: when tutorials stop working, 
+                  when motivation drops, and when quitting feels tempting.
+                </p>
+              </div>
+            </div>
           </div>
 
           <div className="bg-white/70 rounded-xl p-6">
-            <h3 className="text-xl font-semibold mb-3">3️⃣ Personal Stories & Build-in-Public</h3>
-            <p className="text-gray-700">
-              Real experiences, lessons, and reflections from learning, building, failing, and improving. 
-              These posts aren't about perfection — they're about process.
-            </p>
+            <div className="flex items-start gap-3">
+              <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-gray-900 flex items-center justify-center">
+                <User className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <h3 className="text-xl font-semibold mb-3">Personal Stories & Build-in-Public</h3>
+                <p className="text-gray-700">
+                  Real experiences, lessons, and reflections from learning, building, failing, and improving. 
+                  These posts aren't about perfection — they're about process.
+                </p>
+              </div>
+            </div>
           </div>
 
           <div className="bg-white/70 rounded-xl p-6">
-            <h3 className="text-xl font-semibold mb-3">4️⃣ Minimal Technical Confidence Builders</h3>
-            <p className="text-gray-700">
-              Light technical insights designed to build confidence, not overwhelm. The goal isn't to teach everything, 
-              but to help beginners stop panicking and start thinking clearly.
-            </p>
+            <div className="flex items-start gap-3">
+              <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-gray-900 flex items-center justify-center">
+                <Code className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <h3 className="text-xl font-semibold mb-3">Minimal Technical Confidence Builders</h3>
+                <p className="text-gray-700">
+                  Light technical insights designed to build confidence, not overwhelm. The goal isn't to teach everything, 
+                  but to help beginners stop panicking and start thinking clearly.
+                </p>
+              </div>
+            </div>
           </div>
 
           <div className="bg-white/70 rounded-xl p-6">
-            <h3 className="text-xl font-semibold mb-3">5️⃣ Direction & Career Clarity</h3>
-            <p className="text-gray-700">
-              Posts focused on reducing confusion around learning paths, tech stacks, and expectations — helping 
-              students choose direction without freezing or burning out.
-            </p>
+            <div className="flex items-start gap-3">
+              <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-gray-900 flex items-center justify-center">
+                <MapPin className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <h3 className="text-xl font-semibold mb-3">Direction & Career Clarity</h3>
+                <p className="text-gray-700">
+                  Posts focused on reducing confusion around learning paths, tech stacks, and expectations — helping 
+                  students choose direction without freezing or burning out.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </motion.section>

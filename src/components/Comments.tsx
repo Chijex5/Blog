@@ -19,6 +19,7 @@ export default function Comments({ postId }: CommentsProps) {
   const [authorName, setAuthorName] = useState('');
   const [authorEmail, setAuthorEmail] = useState('');
   const [content, setContent] = useState('');
+  const [isAnonymous, setIsAnonymous] = useState(false);
 
   // Fetch comments on mount
   useEffect(() => {
@@ -50,8 +51,14 @@ export default function Comments({ postId }: CommentsProps) {
     setSuccessMessage(null);
 
     // Basic validation
-    if (!authorName.trim() || !authorEmail.trim() || !content.trim()) {
-      setError('All fields are required');
+    if (!content.trim()) {
+      setError('Comment is required');
+      return;
+    }
+
+    // Validate name and email only if not anonymous
+    if (!isAnonymous && (!authorName.trim() || !authorEmail.trim())) {
+      setError('Name and email are required');
       return;
     }
 
@@ -64,8 +71,8 @@ export default function Comments({ postId }: CommentsProps) {
         },
         body: JSON.stringify({
           postId,
-          authorName: authorName.trim(),
-          authorEmail: authorEmail.trim(),
+          authorName: isAnonymous ? 'Anonymous' : authorName.trim(),
+          authorEmail: isAnonymous ? 'anonymous@placeholder.com' : authorEmail.trim(),
           content: content.trim(),
         }),
       });
@@ -109,38 +116,55 @@ export default function Comments({ postId }: CommentsProps) {
 
       {/* Comment Form */}
       <form onSubmit={handleSubmit} className="mb-8 space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label htmlFor="author-name" className="block text-sm font-medium text-gray-700 mb-1">
-              Name *
-            </label>
-            <input
-              type="text"
-              id="author-name"
-              value={authorName}
-              onChange={(e) => setAuthorName(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent"
-              placeholder="Your name"
-              required
-              maxLength={255}
-            />
-          </div>
-          <div>
-            <label htmlFor="author-email" className="block text-sm font-medium text-gray-700 mb-1">
-              Email *
-            </label>
-            <input
-              type="email"
-              id="author-email"
-              value={authorEmail}
-              onChange={(e) => setAuthorEmail(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent"
-              placeholder="your@email.com"
-              required
-              maxLength={255}
-            />
-          </div>
+        {/* Anonymous Checkbox */}
+        <div className="flex items-center gap-2">
+          <input
+            type="checkbox"
+            id="anonymous"
+            checked={isAnonymous}
+            onChange={(e) => setIsAnonymous(e.target.checked)}
+            className="w-4 h-4 text-gray-900 border-gray-300 rounded focus:ring-2 focus:ring-gray-900"
+          />
+          <label htmlFor="anonymous" className="text-sm font-medium text-gray-700 cursor-pointer">
+            Comment anonymously
+          </label>
         </div>
+
+        {/* Name and Email Fields - Hidden when anonymous */}
+        {!isAnonymous && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label htmlFor="author-name" className="block text-sm font-medium text-gray-700 mb-1">
+                Name *
+              </label>
+              <input
+                type="text"
+                id="author-name"
+                value={authorName}
+                onChange={(e) => setAuthorName(e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+                placeholder="Your name"
+                required={!isAnonymous}
+                maxLength={255}
+              />
+            </div>
+            <div>
+              <label htmlFor="author-email" className="block text-sm font-medium text-gray-700 mb-1">
+                Email *
+              </label>
+              <input
+                type="email"
+                id="author-email"
+                value={authorEmail}
+                onChange={(e) => setAuthorEmail(e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+                placeholder="your@email.com"
+                required={!isAnonymous}
+                maxLength={255}
+              />
+            </div>
+          </div>
+        )}
         <div>
           <label htmlFor="comment-content" className="block text-sm font-medium text-gray-700 mb-1">
             Comment *
