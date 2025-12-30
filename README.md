@@ -11,6 +11,7 @@ A modern personal blog built with Next.js, TypeScript, and Tailwind CSS.
 - 🔐 **Admin Dashboard** - Full-featured admin panel for managing posts and users
 - 👥 **User Management** - Create and manage admin users
 - ✏️ **Rich Text Editor** - TipTap-powered editor for creating beautiful posts
+- 💬 **Comments System** - Allow readers to comment on blog posts
 - 📧 **Email Service** - Integrated Resend for subscriptions and notifications
 - 🔒 **Authentication** - Secure NextAuth.js integration
 - 🗄️ **PostgreSQL Database** - Robust data management
@@ -71,6 +72,7 @@ npm run dev
 - `npm run lint` - Run ESLint to check code quality
 - `npm run db:seed-admin` - Create a new admin user (requires database setup)
 - `npm run db:migrate-slug` - Add slug column and generate slugs for existing posts
+- `npm run db:migrate-comments` - Add comments table for the comments feature
 - `npm run db:migrate-letters` - Create letters table for Letters feature
 - `npm run db:optimize` - Optimize database with performance indexes
 
@@ -118,6 +120,26 @@ The blog includes a complete email service powered by Resend. See [EMAIL_SERVICE
    NEXT_PUBLIC_SITE_URL=http://localhost:3000
    ```
 3. The subscription form is already integrated in the footer!
+
+## Comments System
+
+The blog includes a complete comments system for reader engagement. See [COMMENTS_FEATURE.md](COMMENTS_FEATURE.md) for detailed documentation.
+
+### Features
+
+- **Reader Comments** - Allow readers to comment on blog posts
+- **Form Validation** - Client and server-side validation
+- **Email Privacy** - Email addresses are stored but never displayed
+- **Moderation Ready** - Soft delete support for moderation
+- **Responsive Design** - Works beautifully on all devices
+
+### Quick Setup
+
+1. Run the comments migration:
+   ```bash
+   npm run db:migrate-comments
+   ```
+2. Comments section appears automatically on all blog posts!
 
 ## Project Structure
 

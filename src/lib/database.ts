@@ -78,6 +78,17 @@ export interface Letter {
   shares?: number;
 }
 
+export interface Comment {
+  id: string;
+  post_id: string;
+  author_name: string;
+  author_email: string;
+  content: string;
+  created_at: Date;
+  updated_at: Date;
+  is_deleted: boolean;
+}
+
 /**
  * Initialize database tables
  */
@@ -848,6 +859,88 @@ export async function unfeatureLetter(id: string): Promise<boolean> {
     return result.rowCount !== null && result.rowCount > 0;
   } catch (error) {
     console.error('Error unfeaturing letter:', error);
+    throw error;
+  } finally {
+    client.release();
+  }
+}
+
+/**
+ * Add a new comment to a blog post
+ */
+export async function addComment(comment: Omit<Comment, 'id' | 'created_at' | 'updated_at' | 'is_deleted'>): Promise<Comment> {
+  const client = await pool.connect();
+  try {
+    const result = await client.query(
+      `INSERT INTO comments (post_id, author_name, author_email, content)
+       VALUES ($1, $2, $3, $4)
+       RETURNING *`,
+      [comment.post_id, comment.author_name, comment.author_email, comment.content]
+    );
+    
+    return result.rows[0];
+  } catch (error) {
+    console.error('Error adding comment:', error);
+    throw error;
+  } finally {
+    client.release();
+  }
+}
+
+/**
+ * Get all comments for a specific blog post (excludes deleted comments)
+ */
+export async function getCommentsByPostId(postId: string): Promise<Comment[]> {
+  const client = await pool.connect();
+  try {
+    const result = await client.query(
+      'SELECT * FROM comments WHERE post_id = $1 AND is_deleted = false ORDER BY created_at DESC',
+      [postId]
+    );
+    
+    return result.rows;
+  } catch (error) {
+    console.error('Error getting comments:', error);
+    throw error;
+  } finally {
+    client.release();
+  }
+}
+
+/**
+ * Get comment count for a specific blog post
+ */
+export async function getCommentCountByPostId(postId: string): Promise<number> {
+  const client = await pool.connect();
+  try {
+    const result = await client.query(
+      'SELECT COUNT(*) as count FROM comments WHERE post_id = $1 AND is_deleted = false',
+      [postId]
+    );
+    
+    return result.rows[0]?.count ?? 0;
+  } catch (error) {
+    console.error('Error getting comment count:', error);
+    throw error;
+  } finally {
+    client.release();
+  }
+}
+
+/**
+ * Soft delete a comment (marks as deleted instead of removing)
+ */
+export async function deleteComment(id: string): Promise<boolean> {
+  const client = await pool.connect();
+  try {
+    const result = await client.query(
+      'UPDATE comments SET is_deleted = true, updated_at = CURRENT_TIMESTAMP WHERE id = $1',
+      [id]
+    );
+    
+    return result.rowCount !== null && result.rowCount > 0;
+  } catch (error) {
+    console.error('Error deleting comment:', error);
     throw error;
   } finally {
     client.release();

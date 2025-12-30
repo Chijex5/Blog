@@ -5,6 +5,7 @@ import { ArrowLeft, Clock, Tag } from 'lucide-react';
 import ScrollProgressBar from '@/components/ScrollProgressBar';
 import Footer from '@/components/Footer';
 import TiptapRenderer from '@/components/TiptapRenderer';
+import Comments from '@/components/Comments';
 import type { Metadata } from 'next';
 
 interface PageProps {
@@ -198,6 +199,9 @@ export default async function BlogPost({ params }: PageProps) {
           {/* Content */}
           <TiptapRenderer content={post.content} />
         </article>
+
+        {/* Comments Section */}
+        <Comments postId={post.id} />
 
         {/* Related Posts or CTA could go here */}
         <div className="mt-16 text-center">
