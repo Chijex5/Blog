@@ -83,7 +83,7 @@ export default function AdminEditor({ postId, postdata }: { postId?: string; pos
         content,
         author: (author || 'Anonymous').trim().slice(0, 100),
         tags: tagsArray,
-        category: category || null,
+        category: category || undefined,
         image: image.trim(),
         readTime,
         date: new Date().toISOString(),
