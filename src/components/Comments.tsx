@@ -72,7 +72,7 @@ export default function Comments({ postId }: CommentsProps) {
         body: JSON.stringify({
           postId,
           authorName: isAnonymous ? 'Anonymous' : authorName.trim(),
-          authorEmail: isAnonymous ? 'anonymous@example.com' : authorEmail.trim(),
+          authorEmail: isAnonymous ? `anonymous-${crypto.randomUUID()}@internal.app` : authorEmail.trim(),
           content: content.trim(),
         }),
       });
