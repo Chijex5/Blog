@@ -49,7 +49,9 @@ function AdminProfileSection() {
 function AdminSidebar() {
   const pathname = usePathname();
   const { isCollapsed } = useSidebar();
-
+  if (pathname === '/admin/login') {
+    return null;
+  }
   return (
     <Sidebar>
       <SidebarToggle />
