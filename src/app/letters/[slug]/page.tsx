@@ -74,8 +74,11 @@ export default async function LetterPage({ params }: PageProps) {
     // Generate HTML from TipTap JSON
     contentHTML = generateHTML(contentObj, [StarterKit, Highlight]);
   } catch (error) {
-    // Fallback: if it's already HTML or parsing fails, use as-is
-    contentHTML = typeof letter.content === 'string' ? letter.content : '';
+    // Fallback: if it's already HTML or parsing fails, use as-is for strings,
+    // and show a user-facing message for non-string content
+    contentHTML = typeof letter.content === 'string'
+      ? letter.content
+      : 'Unable to display this letter\'s content due to a formatting error.';
     console.error('Error parsing letter content:', error);
   }
 
