@@ -90,7 +90,7 @@ export default function Footer() {
         <nav className="flex flex-wrap items-center justify-center gap-8 md:gap-12 mb-6 text-[#6b6b6b]">
           <a href="/" className="hover:text-black transition-colors">Home</a>
           <a href="/about" className="hover:text-black transition-colors">About</a>
-          <a href="/blog" className="hover:text-black transition-colors">Blog</a>
+          <a href="/chijioke" className="hover:text-black transition-colors">Me</a>
           <a href="https://uzodinma.tech" target="_blank" rel="noopener noreferrer" className="hover:text-black transition-colors">Portfolio</a>
         </nav>
         
