@@ -239,6 +239,7 @@ export default function AdminEditor({ postId, postdata }: { postId?: string; pos
                 Category
               </label>
               <select
+                title='Select a category'
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
                 className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-900 font-sans bg-white"
