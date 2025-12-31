@@ -24,6 +24,16 @@ export const manrope = Manrope({
 export const metadata: Metadata = {
   title: "Chijioke's Blog | Learning Tech as a Student",
   description: "Honest insights about learning programming as a student. Real talk about confusion, impostor syndrome, and staying in the game long enough to grow.",
+  icons: {
+    icon: [
+      { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
+      { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+    ],
+    apple: [
+      { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
+    ],
+  },
+  manifest: '/site.webmanifest',
 };
 
 export default function RootLayout({
