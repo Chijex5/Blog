@@ -13,7 +13,7 @@ import {
 } from "lucide-react"
 import { Input } from "./ui/input"
 import { useRouter, usePathname } from "next/navigation"
-import { BsTwitterX } from "react-icons/bs";
+import { BsTwitterX, BsLinkedin } from "react-icons/bs";
 import SubscribedModal from "./subscribed-modal"
 import FeaturedLetter from "./FeaturedLetter"
 
@@ -250,8 +250,8 @@ export default function SidebarApp() {
             <SidebarMenuButton to="https://github.com/chijex5" isExternal icon={GithubIcon} showArrow>
               GitHub
             </SidebarMenuButton>
-            <SidebarMenuButton to="mailto:contact@example.com" isExternal icon={Mail} showArrow>
-              Email
+            <SidebarMenuButton to="https://www.linkedin.com/in/chijioke-uzodinma-34389b267/" isExternal icon={BsLinkedin} showArrow>
+              LinkedIn
             </SidebarMenuButton>
           </SidebarGroup>
 

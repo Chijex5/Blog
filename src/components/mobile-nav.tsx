@@ -1,7 +1,7 @@
 "use client";
 import { HomeIcon, UserCircle2Icon, FileText, Mail } from "lucide-react";
 import { FiGithub } from "react-icons/fi";
-import { BsTwitterX } from "react-icons/bs";
+import { BsTwitterX, BsLinkedin } from "react-icons/bs";
 import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -14,7 +14,7 @@ export default function MobileNav() {
     { icon: FileText, label: 'Letters', href: '/letters', isExternal: false },
     { icon: FiGithub, label: 'GitHub', href: 'https://github.com/chijex5', isExternal: true },
     { icon: BsTwitterX, label: 'Twitter', href: 'https://x.com/chijex5', isExternal: true },
-    { icon: Mail, label: 'Email', href: 'mailto:chijioke@uzodinma.tech', isExternal: true }
+    { icon: BsLinkedin, label: 'LinkedIn', href: 'https://www.linkedin.com/in/chijioke-uzodinma-34389b267/', isExternal: true }
   ];
     const pathname = usePathname();
     if (pathname.startsWith('/admin')) {
