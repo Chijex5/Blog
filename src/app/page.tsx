@@ -1,56 +1,30 @@
-'use client';
-
-import { useState, useEffect } from "react"
-import BlogCard from "@/components/BlogCard"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
-import BadgeComponent from "./BadgeComponent"
+import { getBlogPosts } from "@/data/posts"
 import Footer from "@/components/Footer"
-import { RiSearchLine } from "react-icons/ri";
+import type { Metadata } from 'next';
 import Newsletter from "./newsLetter"
-import { BLOG_CATEGORIES } from "@/constants/categories"
-import { BlogPost } from "@/types/blog"
+import FilterablePosts from "@/components/FilterablePosts"
 
-const categories = ["All", ...BLOG_CATEGORIES]
+export const revalidate = 60;
 
-export default function Home() {
-  const [posts, setPosts] = useState<BlogPost[]>([])
-  const [filteredPosts, setFilteredPosts] = useState<BlogPost[]>([])
-  const [selectedCategory, setSelectedCategory] = useState<string>("All")
-  const [isLoading, setIsLoading] = useState(true)
+// SEO metadata for home page
+export const metadata: Metadata = {
+  title: "Learning Tech as a Student | Real Talk About Programming and Growth",
+  description: "Honest insights about learning programming, dealing with confusion, impostor syndrome, and staying in the game long enough to grow. For beginners who feel lost after the initial excitement.",
+  keywords: ["learning programming", "coding for beginners", "impostor syndrome", "tutorial hell", "student developer", "learning tech", "programming journey", "beginner coding"],
+  openGraph: {
+    title: "Learning Tech as a Student | Real Talk About Programming and Growth",
+    description: "Honest insights about learning programming, dealing with confusion, impostor syndrome, and staying in the game long enough to grow.",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Learning Tech as a Student | Real Talk About Programming and Growth",
+    description: "Honest insights about learning programming, dealing with confusion, impostor syndrome, and staying in the game long enough to grow.",
+  },
+};
 
-  useEffect(() => {
-    async function fetchPosts() {
-      try {
-        const response = await fetch('/api/posts')
-        if (response.ok) {
-          const fetchedPosts = await response.json()
-          setPosts(fetchedPosts)
-          setFilteredPosts(fetchedPosts)
-        } else {
-          console.error('Failed to fetch posts')
-        }
-      } catch (error) {
-        console.error('Error fetching posts:', error)
-      } finally {
-        setIsLoading(false)
-      }
-    }
-    fetchPosts()
-  }, [])
-
-  useEffect(() => {
-    if (selectedCategory === "All") {
-      setFilteredPosts(posts)
-    } else {
-      setFilteredPosts(posts.filter(post => post.category === selectedCategory))
-    }
-  }, [selectedCategory, posts])
-
-  const handleCategoryChange = (category: string) => {
-    setSelectedCategory(category)
-  }
+export default async function Home() {
+  const posts = await getBlogPosts()
 
   return (
     <main className="max-w-7xl mx-auto bg-[var(--color-warm-bg)] md:max-w-[80vw] px-4 py-20">
@@ -72,59 +46,9 @@ export default function Home() {
         </p>
       </section>
 
-      {/* FILTER BAR */}
-      <section className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-6">
-        <div className="md:flex md:flex-row md:flex-wrap grid grid-cols-4 gap-2">
-          <BadgeComponent 
-            categories={categories} 
-            selectedCategory={selectedCategory}
-            onCategoryChange={handleCategoryChange}
-          /> 
-        </div>
-
-        <div className="relative w-full md:max-w-xs">
-      {/* Search Icon */}
-          <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-            <RiSearchLine className="w-5 h-5 text-gray-400" />
-          </div>
-
-          {/* Input */}
-          <input
-            type="text"
-            placeholder="Search"
-            className="
-              w-full
-              h-11
-              pl-10
-              pr-4
-              rounded-xl
-              bg-white
-              focus:outline-none
-              focus:ring-2 focus:ring-[var(--color-warm-accent)]
-              focus:border-transparent
-            "
-          />
-        </div>
-      </section>
-
-      {/* BLOG GRID */}
-      {isLoading ? (
-        <section className="flex items-center justify-center min-h-[400px]">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
-        </section>
-      ) : (
-        <section className="grid grid-cols-1 md:grid-cols-2  lg:grid-cols-3 gap-8">
-          {filteredPosts.length > 0 ? (
-            filteredPosts.map((post) => (
-              <BlogCard key={post.id} post={post} />
-            ))
-          ) : (
-            <div className="col-span-full text-center py-12">
-              <p className="text-gray-600">No posts found in this category.</p>
-            </div>
-          )}
-        </section>
-      )}
+      {/* FILTERABLE POSTS COMPONENT */}
+      <FilterablePosts posts={posts} />
+      
       <Footer />  
     </main>
   )
