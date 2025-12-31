@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from "react"
-import { getBlogPosts } from "@/data/posts"
 import BlogCard from "@/components/BlogCard"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -24,9 +23,14 @@ export default function Home() {
   useEffect(() => {
     async function fetchPosts() {
       try {
-        const fetchedPosts = await getBlogPosts()
-        setPosts(fetchedPosts)
-        setFilteredPosts(fetchedPosts)
+        const response = await fetch('/api/posts')
+        if (response.ok) {
+          const fetchedPosts = await response.json()
+          setPosts(fetchedPosts)
+          setFilteredPosts(fetchedPosts)
+        } else {
+          console.error('Failed to fetch posts')
+        }
       } catch (error) {
         console.error('Error fetching posts:', error)
       } finally {
