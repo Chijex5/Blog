@@ -91,7 +91,7 @@ export default function Footer() {
           <a href="/" className="hover:text-black transition-colors">Home</a>
           <a href="/about" className="hover:text-black transition-colors">About</a>
           <a href="/chijioke" className="hover:text-black transition-colors">Me</a>
-          <a href="https://uzodinma.tech" target="_blank" rel="noopener noreferrer" className="hover:text-black transition-colors">Portfolio</a>
+          <a href="https://portfolio.uzodinma.tech" target="_blank" rel="noopener noreferrer" className="hover:text-black transition-colors">Portfolio</a>
         </nav>
         
         {/* Copyright and Design Credit */}
