@@ -8,7 +8,7 @@ export const blogPosts: BlogPost[] = [
     slug: 'getting-started-with-nextjs-and-typescript',
     title: 'Getting Started with Next.js and TypeScript',
     excerpt: 'Learn how to build modern web applications with Next.js 16 and TypeScript. This guide covers the basics and best practices.',
-    category: 'Technology',
+    category: 'Confidence Builders',
     content: {
       type: 'doc',
       content: [
@@ -168,7 +168,7 @@ export const blogPosts: BlogPost[] = [
     title: 'Mastering Tailwind CSS',
     image: 'https://framerusercontent.com/images/PutCbUrDHloKzYlnrmDgTEqX2pU.png',
     excerpt: 'Discover the power of utility-first CSS with Tailwind. Learn how to build beautiful, responsive designs quickly and efficiently.',
-    category: 'Technology',
+    category: 'Confidence Builders',
     content: {
       type: 'doc',
       content: [
@@ -319,7 +319,7 @@ export const blogPosts: BlogPost[] = [
     title: 'Building a Personal Blog: My Journey',
     image: 'https://framerusercontent.com/images/Ct1xSTSiaJsPf3n2aDyia8cZ390.png?scale-down-to=1024',
     excerpt: 'A reflection on creating this blog using modern web technologies. Learn about the decisions and challenges faced along the way.',
-    category: 'Personal',
+    category: 'Stories & Reflections',
     content: {
       type: 'doc',
       content: [
@@ -654,7 +654,7 @@ export async function getBlogPosts(): Promise<BlogPost[]> {
         title: post.title,
         excerpt: post.excerpt,
         content: parseContent(post.content),
-        category: post.category || 'Uncategorized',
+        category: post.category || undefined,
         date: typeof post.date === 'string' ? post.date : (post.date as Date).toISOString(),
         author: post.author,
         image: post.image || '',
@@ -685,7 +685,7 @@ export async function getBlogPost(id: string): Promise<BlogPost | undefined> {
         title: dbPost.title,
         excerpt: dbPost.excerpt,
         content: parseContent(dbPost.content),
-        category: dbPost.category || 'Uncategorized',
+        category: dbPost.category || undefined,
         date: typeof dbPost.date === 'string' ? dbPost.date : (dbPost.date as Date).toISOString(),
         author: dbPost.author,
         image: dbPost.image || '',
@@ -716,7 +716,7 @@ export async function getBlogPostBySlug(slug: string): Promise<BlogPost | undefi
         title: dbPost.title,
         excerpt: dbPost.excerpt,
         content: parseContent(dbPost.content),
-        category: dbPost.category || 'Uncategorized',
+        category: dbPost.category || undefined,
         date: typeof dbPost.date === 'string' ? dbPost.date : (dbPost.date as Date).toISOString(),
         author: dbPost.author,
         image: dbPost.image || '',

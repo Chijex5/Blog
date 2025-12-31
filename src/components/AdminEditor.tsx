@@ -9,6 +9,7 @@ import RichEditor from '@/components/RichEditor';
 import TiptapRenderer from '@/components/TiptapRenderer';
 import { Button } from './ui/button';
 import { BlogPost } from '@/types/blog';
+import { BLOG_CATEGORIES } from '@/constants/categories';
 
 // Calculate read time based on word count
 function calculateReadTime(content: string): string {
@@ -34,15 +35,6 @@ export default function AdminEditor({ postId, postdata }: { postId?: string; pos
 
   const readTime = calculateReadTime(content);
   const tagsArray = tags.split(',').map(t => t.trim()).filter(t => t);
-  
-  // Available categories
-  const availableCategories = [
-    'Reality Checks',
-    'Survival Guides',
-    'Stories & Reflections',
-    'Direction & Growth',
-    'Confidence Builders'
-  ];
 
   // Load existing post if editing
   useEffect(() => {
@@ -245,7 +237,7 @@ export default function AdminEditor({ postId, postdata }: { postId?: string; pos
                 className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-900 font-sans bg-white"
               >
                 <option value="">Select a category...</option>
-                {availableCategories.map((cat) => (
+                {BLOG_CATEGORIES.map((cat) => (
                   <option key={cat} value={cat}>
                     {cat}
                   </option>

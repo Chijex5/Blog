@@ -8,8 +8,9 @@ import Footer from "@/components/Footer"
 import { RiSearchLine } from "react-icons/ri";
 import type { Metadata } from 'next';
 import Newsletter from "./newsLetter"
+import { BLOG_CATEGORIES } from "@/constants/categories"
 
-const categories = ["All", "Reality Checks", "Survival Guides", "Stories & Reflections", "Direction & Growth", "Confidence Builders"]
+const categories = ["All", ...BLOG_CATEGORIES]
 
 export const revalidate = 60;
 

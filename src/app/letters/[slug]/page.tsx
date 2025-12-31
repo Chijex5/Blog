@@ -78,7 +78,7 @@ export default async function LetterPage({ params }: PageProps) {
     // and show a user-facing message for non-string content
     contentHTML = typeof letter.content === 'string'
       ? letter.content
-      : 'Unable to display this letter\'s content due to a formatting error.';
+      : '<p class="text-red-600">Unable to display this letter\'s content due to a formatting error. Please contact support if this issue persists.</p>';
     console.error('Error parsing letter content:', error);
   }
 

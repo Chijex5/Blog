@@ -87,7 +87,7 @@ export default function About() {
         <div className="space-y-6">
           <div className="bg-white/70 rounded-xl p-6">
             <div className="flex items-start gap-3">
-              <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-gray-900 flex items-center justify-center">
+              <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-gray-900 flex items-center justify-center" aria-hidden="true">
                 <Lightbulb className="w-5 h-5 text-white" />
               </div>
               <div>
@@ -102,7 +102,7 @@ export default function About() {
 
           <div className="bg-white/70 rounded-xl p-6">
             <div className="flex items-start gap-3">
-              <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-gray-900 flex items-center justify-center">
+              <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-gray-900 flex items-center justify-center" aria-hidden="true">
                 <BookOpen className="w-5 h-5 text-white" />
               </div>
               <div>
@@ -117,7 +117,7 @@ export default function About() {
 
           <div className="bg-white/70 rounded-xl p-6">
             <div className="flex items-start gap-3">
-              <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-gray-900 flex items-center justify-center">
+              <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-gray-900 flex items-center justify-center" aria-hidden="true">
                 <User className="w-5 h-5 text-white" />
               </div>
               <div>
@@ -132,7 +132,7 @@ export default function About() {
 
           <div className="bg-white/70 rounded-xl p-6">
             <div className="flex items-start gap-3">
-              <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-gray-900 flex items-center justify-center">
+              <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-gray-900 flex items-center justify-center" aria-hidden="true">
                 <Code className="w-5 h-5 text-white" />
               </div>
               <div>
@@ -147,7 +147,7 @@ export default function About() {
 
           <div className="bg-white/70 rounded-xl p-6">
             <div className="flex items-start gap-3">
-              <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-gray-900 flex items-center justify-center">
+              <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-gray-900 flex items-center justify-center" aria-hidden="true">
                 <MapPin className="w-5 h-5 text-white" />
               </div>
               <div>

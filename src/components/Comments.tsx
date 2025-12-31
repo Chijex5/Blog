@@ -144,7 +144,6 @@ export default function Comments({ postId }: CommentsProps) {
                 onChange={(e) => setAuthorName(e.target.value)}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent"
                 placeholder="Your name"
-                required
                 maxLength={255}
               />
             </div>
@@ -159,7 +158,6 @@ export default function Comments({ postId }: CommentsProps) {
                 onChange={(e) => setAuthorEmail(e.target.value)}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent"
                 placeholder="your@email.com"
-                required
                 maxLength={255}
               />
             </div>
