@@ -10,6 +10,7 @@ export interface BlogPost {
   date: string;
   author: string;
   tags: string[];
+  category?: string;
   readTime: string;
   created_by?: string;
   updated_by?: string;

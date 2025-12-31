@@ -9,6 +9,7 @@ import RichEditor from '@/components/RichEditor';
 import TiptapRenderer from '@/components/TiptapRenderer';
 import { Button } from './ui/button';
 import { BlogPost } from '@/types/blog';
+import { BLOG_CATEGORIES } from '@/constants/categories';
 
 // Calculate read time based on word count
 function calculateReadTime(content: string): string {
@@ -25,6 +26,7 @@ export default function AdminEditor({ postId, postdata }: { postId?: string; pos
   const [excerpt, setExcerpt] = useState('');
   const [author, setAuthor] = useState(session?.user?.name || '');
   const [tags, setTags] = useState('');
+  const [category, setCategory] = useState('');
   const [image, setImage] = useState('');
   const [content, setContent] = useState('');
   const [showPreview, setShowPreview] = useState(false);
@@ -41,6 +43,7 @@ export default function AdminEditor({ postId, postdata }: { postId?: string; pos
         setExcerpt(postdata.excerpt || '');
         setAuthor(postdata.author || '');
         setTags(postdata.tags?.join(', ') || '');
+        setCategory(postdata.category || '');
         setImage(postdata.image || '');
         setContent(typeof postdata.content === 'string' ? postdata.content : JSON.stringify(postdata.content || {}));
     }
@@ -72,6 +75,7 @@ export default function AdminEditor({ postId, postdata }: { postId?: string; pos
         content,
         author: (author || 'Anonymous').trim().slice(0, 100),
         tags: tagsArray,
+        category: category || undefined,
         image: image.trim(),
         readTime,
         date: new Date().toISOString(),
@@ -221,6 +225,26 @@ export default function AdminEditor({ postId, postdata }: { postId?: string; pos
               />
             </div>
 
+            {/* Category */}
+            <div>
+              <label className="block text-sm font-medium text-gray-900 mb-2">
+                Category
+              </label>
+              <select
+                title='Select a category'
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-900 font-sans bg-white"
+              >
+                <option value="">Select a category...</option>
+                {BLOG_CATEGORIES.map((cat) => (
+                  <option key={cat} value={cat}>
+                    {cat}
+                  </option>
+                ))}
+              </select>
+            </div>
+
             {/* Image URL */}
             <div>
               <label className="block text-sm font-medium text-gray-900 mb-2">
@@ -276,6 +300,11 @@ export default function AdminEditor({ postId, postdata }: { postId?: string; pos
               {/* Header */}
               <header className="mb-12 text-center">
                 <div className="flex flex-wrap items-center justify-center gap-3 mb-6">
+                  {category && (
+                    <span className="inline-flex items-center gap-1 rounded-full bg-gray-900 text-white font-medium px-3 py-1 text-xs">
+                      {category}
+                    </span>
+                  )}
                   {tagsArray.map((tag) => (
                     <span
                       key={tag}
