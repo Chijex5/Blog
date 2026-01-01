@@ -23,7 +23,7 @@ export default function FilterablePosts({ posts }: FilterablePostsProps) {
     <>
       {/* FILTER BAR */}
       <section className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-6">
-        <div className="md:flex md:flex-row md:flex-wrap grid grid-cols-4 gap-2">
+        <div className="md:flex md:flex-row md:flex-wrap grid grid-cols-3 gap-2">
           <BadgeComponent 
             categories={categories} 
             selectedCategory={selectedCategory}
