@@ -7,6 +7,7 @@ import { Lora, Source_Serif_4, Manrope } from 'next/font/google'
 import MobileNav from "@/components/mobile-nav";
 import AuthProvider from "@/components/AuthProvider";
 import { Toaster}  from "sonner"
+import { Analytics } from "@vercel/analytics/next"
 
 export const sourceSerif = Source_Serif_4({
   subsets: ['latin'],
@@ -45,6 +46,7 @@ export default function RootLayout({
     <html lang="en" className={`${sourceSerif.variable} ${manrope.variable}`}>
       <body className="antialiased font-sans">
         <AuthProvider>
+          <Analytics />
           <SidebarProvider>
             <Toaster position="top-center"  />
             <SidebarApp />

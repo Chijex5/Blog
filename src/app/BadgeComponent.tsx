@@ -25,7 +25,7 @@ export default function BadgeComponent({
           onClick={() => handleCategoryClick(cat)}
           key={cat}
           variant="secondary"
-          className={`cursor-pointer border flex items-center justify-center rounded-lg px-4 py-1 text-sm ${selectedCategory === cat ? "bg-white" : "bg-[#ede8e6]"}`}
+          className={`cursor-pointer border flex items-center justify-center rounded-lg px-4 py-1 text-[0.4rem] sm:text-sm ${selectedCategory === cat ? "bg-white" : "bg-[#ede8e6]"}`}
         >
           {cat}
         </Badge>
